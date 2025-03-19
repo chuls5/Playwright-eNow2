@@ -112,3 +112,45 @@ test('Verify Join Session button', async ({ page }) => {
   await page.getByRole('button', { name: 'Video Join video session' }).click();
   await expect(page.locator('.VideoSetUp')).toBeVisible();
 });
+
+
+test('Verify Reschedule session button', async ({ page }) => {
+  await page.goto('/dashboard');
+
+  // 1. Verify the precondition that patient is logged-in on the Dashboard page
+  await expect(page).toHaveURL(/.*\/dashboard/);
+
+  // 2. Observe a module with the "Reschedule session" button
+  await page.getByRole('button', { name: 'DotsV' }).first().click();
+  await page.getByRole('button', { name: 'CalendarRepeat Reschedule' }).click();
+  await expect(page.getByRole('heading', { name: 'Select new date & time' })).toBeVisible();
+});
+
+
+test('Verify Cancel session button', async ({ page }) => {
+  await page.goto('/dashboard');
+
+  // 1. Verify the precondition that patient is logged-in on the Dashboard page
+  await expect(page).toHaveURL(/.*\/dashboard/);
+
+  // 2. Observe a module with the "Cancel session" button
+  await page.getByRole('button', { name: 'DotsV' }).first().click();
+  await page.getByRole('button', { name: 'XCircle Cancel session' }).click();
+  await expect(page.getByText('Cancel session?')).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Yes, cancel' })).toBeVisible();
+});
+
+
+test('Verify Year selector for past appointments', async ({ page }) => {
+  await page.goto('/dashboard');
+
+  // 1. Verify the precondition that patient is logged-in on the Dashboard page
+  await expect(page).toHaveURL(/.*\/dashboard/);
+
+  // 2. Locate the year selector in the past appointments section
+  await expect(page.getByRole('link', { name: 'ChevronDown' })).toBeVisible({ timeout: 10000 });
+  await page.getByRole('link', { name: 'ChevronDown' }).click();
+  await expect(page.locator('[data-testid="items-wrapper"]')).toBeVisible();
+  await page.locator('[data-testid="items-wrapper"]').click();
+
+});

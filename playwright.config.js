@@ -18,7 +18,7 @@ export default defineConfig({
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
-  workers: process.env.CI ? 1 : undefined,
+  workers: process.env.CI ? 1 : 1, // Ensure this line is correct
   // Reporter to use
   reporter: [
     ['html', { outputFolder: 'playwright-report' }],
@@ -70,6 +70,24 @@ export default defineConfig({
         storageState: 'playwright/.auth/provider.json',
       },
       dependencies: ['provider-setup'],
+    },
+    {
+      name: 'patient-safari',
+      use: { 
+        ...devices['Desktop Safari'],
+        // Use the authenticated state
+        storageState: 'playwright/.auth/patient.json',
+      },
+      dependencies: ['patient-setup'],
+    },
+    {
+      name: 'patient-edge',
+      use: { 
+        ...devices['Desktop Edge'],
+        // Use the authenticated state
+        storageState: 'playwright/.auth/patient.json',
+      },
+      dependencies: ['patient-setup'],
     },
   ],
 });
