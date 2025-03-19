@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { it } from 'node:test';
 
-// Use the stored authentication state from your setup file
+// Use the Patients stored authentication state
 test.use({ storageState: 'playwright/.auth/patient.json' });
 
 test('Verify Patient Dashboard Accessibility', async ({ page }) => {
@@ -76,4 +76,25 @@ test('Verify See a Provider Now Button', async ({ page }) => {
 
   // 4. Assert that you are now at the expected URL
   await expect(page).toHaveURL(/.*\/dashboard\/see-provider-now/);
+});
+
+
+test('Verify Appointment Details button', async ({ page }) => {
+  await page.goto('/dashboard');
+
+  // 1. Verify the precondition that patient is logged-in on the Dashboard page
+  await expect(page).toHaveURL(/.*\/dashboard/);
+
+  // 2. Observe a module in the "Upcomming Appointments"
+  await page.locator('span').filter({ hasText: 'General Practice' }).first().click();
+  await expect(page.getByText('Session Details')).toBeVisible();
+
+  // 3. Observe a module in the "Past Appointments" section
+  await expect(page.getByText('Past appointments')).toBeVisible();
+  await page.getByRole('button', { name: 'XClose' }).click();
+
+  // 4. Click on the "View details" link
+  const viewDetailsLink = page.getByRole('link', { name: 'View details' }).first();
+  await expect(viewDetailsLink).toBeVisible();
+  await expect(viewDetailsLink).toBeEnabled();
 });
