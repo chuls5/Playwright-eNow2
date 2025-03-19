@@ -5,9 +5,8 @@ import { it } from 'node:test';
 test.use({ storageState: 'playwright/.auth/patient.json' });
 
 test('Verify Patient Dashboard Accessibility', async ({ page }) => {
-  await page.goto('/dashboard');
-
   // 1. Verify the precondition that patient is logged-in on the Dashboard page
+  await page.goto('/dashboard');
   await expect(page).toHaveURL(/.*\/dashboard/);
 
   // 2. Verify the header/top navigation bar is displayed
@@ -44,9 +43,8 @@ test('Verify Patient Dashboard Accessibility', async ({ page }) => {
 
 
 test('Verify Schedule an Appointment button', async ({ page }) => {
-  await page.goto('/dashboard');
-
   // 1. Verify the precondition that patient is logged-in on the Dashboard page
+  await page.goto('/dashboard');
   await expect(page).toHaveURL(/.*\/dashboard/);
 
   // 2. Verify the "Schedule an Appointment" button is displayed
@@ -62,9 +60,8 @@ test('Verify Schedule an Appointment button', async ({ page }) => {
 
 
 test('Verify See a Provider Now Button', async ({ page }) => {
-  await page.goto('/dashboard');
-
   // 1. Verify the precondition that patient is logged-in on the Dashboard page
+  await page.goto('/dashboard');
   await expect(page).toHaveURL(/.*\/dashboard/);
 
   // 2. Locate the "See a Provider now" button
@@ -80,9 +77,8 @@ test('Verify See a Provider Now Button', async ({ page }) => {
 
 
 test('Verify Appointment Details button', async ({ page }) => {
-  await page.goto('/dashboard');
-
   // 1. Verify the precondition that patient is logged-in on the Dashboard page
+  await page.goto('/dashboard');
   await expect(page).toHaveURL(/.*\/dashboard/);
 
   // 2. Observe a module in the "Upcomming Appointments"
@@ -97,4 +93,22 @@ test('Verify Appointment Details button', async ({ page }) => {
   const viewDetailsLink = page.getByRole('link', { name: 'View details' }).first();
   await expect(viewDetailsLink).toBeVisible();
   await expect(viewDetailsLink).toBeEnabled();
+});
+
+
+test('Verify Join Session button', async ({ page }) => {
+  await page.goto('/dashboard');
+
+  // 1. Verify the precondition that patient is logged-in on the Dashboard page
+  await expect(page).toHaveURL(/.*\/dashboard/);
+
+  // 2. Observe a module with the "Join session" button
+  await page.locator('span').filter({ hasText: 'General Practice' }).first().click();
+  await expect(page.getByRole('button', { name: 'Video Join video session' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Video Join video session' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Video Join video session' })).toBeEnabled();
+
+  // 3. Click the "Join session" button
+  await page.getByRole('button', { name: 'Video Join video session' }).click();
+  await expect(page.locator('.VideoSetUp')).toBeVisible();
 });
