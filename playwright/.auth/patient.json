@@ -1,0 +1,18 @@
+{
+  "cookies": [],
+  "origins": [
+    {
+      "origin": "https://portal.sandbox-encounterservices.com",
+      "localStorage": [
+        {
+          "name": "i18nextLng",
+          "value": "en"
+        },
+        {
+          "name": "access_token",
+          "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNDExZTQ4MjMtNzcxNS00Nzk5LTgyMDUtY2E0MmRkMzk5NWFkIiwibGlmZXRpbWUiOjg2NDAwLCJub25jZSI6IlltU2Q3VU1DSzdrZmkxWTJrYTcwdHBjbUxMek9DRm9acFVMU1Ezc3QySWpvdm5wSUtxdXJxRjhzWEw4cHY3WTgiLCJpYXQiOjE3NDI0MTE1MzZ9.QHG4L3L53_JFc1ojeZ5ZKjG4aPpU3Kj4Nah_9Y1oYN0"
+        }
+      ]
+    }
+  ]
+}
