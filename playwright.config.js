@@ -14,15 +14,10 @@ const baseURL = process.env.BASE_URL || 'http://localhost:3000';
  */
 export default defineConfig({
   testDir: './tests',
-  // Maximum time one test can run for
   timeout: 30 * 1000,
-  // Run tests in files in parallel
   fullyParallel: true,
-  // Fail the build on CI if you accidentally left test.only in the source code
   forbidOnly: !!process.env.CI,
-  // Retry tests on CI
   retries: process.env.CI ? 2 : 0,
-  // Opt out of parallel tests on CI
   workers: process.env.CI ? 1 : undefined,
   // Reporter to use
   reporter: [
@@ -50,11 +45,11 @@ export default defineConfig({
     // Setup projects (authentication)
     {
       name: 'patient-setup',
-      testMatch: /.*auth\.setup\.js/,
+      testMatch: /.*auth\.patient\.setup\.js/,
     },
     {
       name: 'provider-setup',
-      testMatch: /.*auth\.setup\.js/,
+      testMatch: /.*auth\.provider\.setup\.js/,
     },
 
     // Main test projects - with authenticated state
@@ -76,40 +71,5 @@ export default defineConfig({
       },
       dependencies: ['provider-setup'],
     },
-
-    // Optional: Add mobile viewports if needed
-    {
-      name: 'patient-mobile',
-      use: { 
-        ...devices['iPhone 13'],
-        storageState: 'playwright/.auth/patient.json',
-      },
-      dependencies: ['patient-setup'],
-    },
-    {
-      name: 'provider-mobile',
-      use: { 
-        ...devices['iPhone 13'],
-        storageState: 'playwright/.auth/provider.json',
-      },
-      dependencies: ['provider-setup'],
-    },
-
-    // Optional: Add unauthenticated test project for login flows
-    {
-      name: 'unauthenticated',
-      use: { ...devices['Desktop Chrome'] },
-    },
   ],
-
-  // Directory where the test outputs should be stored
-  outputDir: 'test-results/',
-
-  // Web server to start before running tests (if needed)
-  // webServer: {
-  //   command: 'npm run start',
-  //   url: baseURL,
-  //   reuseExistingServer: !process.env.CI,
-  //   timeout: 120 * 1000,
-  // },
 });
