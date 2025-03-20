@@ -27,22 +27,14 @@ export default defineConfig({
 
   // Shared settings for all projects
   use: {
-    // Base URL to use in actions like `await page.goto('/')`
     baseURL,
-    
-    // Collect trace when retrying the failed test
     trace: 'on-first-retry',
-    
-    // Capture screenshot after each test failure
     screenshot: 'only-on-failure',
-    
-    // Record video only when retrying a test for the first time
     video: 'on-first-retry',
   },
 
   // Configure projects for major browsers
   projects: [
-    // Setup projects (authentication)
     {
       name: 'patient-setup',
       testMatch: /.*auth\.patient\.setup\.js/,
@@ -52,12 +44,10 @@ export default defineConfig({
       testMatch: /.*auth\.provider\.setup\.js/,
     },
 
-    // Main test projects - with authenticated state
     {
       name: 'patient-chromium',
       use: { 
         ...devices['Desktop Chrome'],
-        // Use the authenticated state
         storageState: 'playwright/.auth/patient.json',
       },
       dependencies: ['patient-setup'],
@@ -66,7 +56,6 @@ export default defineConfig({
       name: 'provider-chromium',
       use: { 
         ...devices['Desktop Chrome'],
-        // Use the authenticated state
         storageState: 'playwright/.auth/provider.json',
       },
       dependencies: ['provider-setup'],
@@ -75,7 +64,6 @@ export default defineConfig({
       name: 'patient-safari',
       use: { 
         ...devices['Desktop Safari'],
-        // Use the authenticated state
         storageState: 'playwright/.auth/patient.json',
       },
       dependencies: ['patient-setup'],
@@ -84,7 +72,6 @@ export default defineConfig({
       name: 'patient-edge',
       use: { 
         ...devices['Desktop Edge'],
-        // Use the authenticated state
         storageState: 'playwright/.auth/patient.json',
       },
       dependencies: ['patient-setup'],
