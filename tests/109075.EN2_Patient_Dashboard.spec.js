@@ -1,12 +1,11 @@
 import { test, expect } from '@playwright/test';
-import { it } from 'node:test';
 
 // Use the Patients stored authentication state
 test.use({ storageState: 'playwright/.auth/patient.json' });
 
 test('Verify Patient Dashboard Accessibility', async ({ page }) => {
   await page.goto('/dashboard');
-  await expect(page).toHaveURL(/.*\/dashboard/);
+  await expect(page.goto('/dashboard')).toHaveURL(/.*\/dashboard/);
 
   // 2. Verify the header/top navigation bar is displayed
   await page.waitForSelector('[data-testid="navigation"]', { timeout: 60000 }); // 60 seconds
@@ -27,7 +26,7 @@ test('Verify Patient Dashboard Accessibility', async ({ page }) => {
   // 6. Check the "Past Appointments" section is displayed
   await expect(page.getByText('Past appointments')).toBeVisible();
   await expect(page.locator('[data-testid="dropselect"]')).toBeVisible();
-  
+
   const tableData = page.locator('[data-testid="table"]');
   await expect(tableData).toBeVisible();
   await expect(tableData).toContainText('Date');
@@ -83,7 +82,8 @@ test("Verify 'Appointment Details' button", async ({ page }) => {
 
   // 4. Click on the "View details" link
   const viewDetailsLink = page.getByRole('link', { name: 'View details' }).first();
-  await expect(viewDetailsLink).toBeVisible().toBeEnabled();
+  await expect(viewDetailsLink).toBeVisible()
+  await expect(viewDetailsLink).toBeEnabled();
 });
 
 

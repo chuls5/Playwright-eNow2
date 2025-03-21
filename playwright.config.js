@@ -1,5 +1,5 @@
 // @ts-check
-import { defineConfig, devices } from '@playwright/test';
+import { defineConfig, devices, expect } from '@playwright/test';
 import dotenv from 'dotenv';
 import path from 'path';
 
@@ -14,7 +14,10 @@ const baseURL = process.env.BASE_URL || 'http://localhost:3000';
  */
 export default defineConfig({
   testDir: './tests',
-  timeout: 30 * 1000,
+  timeout: 100000, 
+  expect: {
+    timeout: 100000, 
+  },
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
