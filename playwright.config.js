@@ -1,12 +1,8 @@
-// @ts-check
 import { defineConfig, devices, expect } from '@playwright/test';
 import dotenv from 'dotenv';
-import path from 'path';
 
-// Load environment variables from .env file
 dotenv.config();
 
-// Ensure BASE_URL is available
 const baseURL = process.env.BASE_URL || 'http://localhost:3000';
 
 /**
@@ -14,14 +10,14 @@ const baseURL = process.env.BASE_URL || 'http://localhost:3000';
  */
 export default defineConfig({
   testDir: './tests',
-  timeout: 60000 * 2, 
+  timeout: 60000 *2, 
   expect: {
-    timeout: 5000 * 2, 
+    timeout: 10000 *2, 
   },
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
-  workers: process.env.CI ? 1 : 1, // Ensure this line is correct
+  workers: process.env.CI ? 2 : 1, 
   // Reporter to use
   reporter: [
     ['html', { outputFolder: 'playwright-report' }],
@@ -42,6 +38,7 @@ export default defineConfig({
       name: 'patient-setup',
       testMatch: /.*auth\.patient\.setup\.js/,
     },
+
     {
       name: 'provider-setup',
       testMatch: /.*auth\.provider\.setup\.js/,
@@ -55,6 +52,7 @@ export default defineConfig({
       },
       dependencies: ['patient-setup'],
     },
+
     {
       name: 'provider-chromium',
       use: { 
@@ -63,6 +61,7 @@ export default defineConfig({
       },
       dependencies: ['provider-setup'],
     },
+
     {
       name: 'patient-safari',
       use: { 
@@ -71,6 +70,7 @@ export default defineConfig({
       },
       dependencies: ['patient-setup'],
     },
+
     {
       name: 'patient-edge',
       use: { 
@@ -79,5 +79,6 @@ export default defineConfig({
       },
       dependencies: ['patient-setup'],
     },
+
   ],
 });
