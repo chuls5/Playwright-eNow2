@@ -7,7 +7,7 @@ dotenv.config();
 // Use the Patients stored authentication state
 test.use({ storageState: 'playwright/.auth/patient.json' });
 
-test.describe('Patient Logged-IN Dashboard Tests', () => {
+test.describe('Patient Logged-IN Dashboard', () => {
 
   test('Verify Patient Dashboard Accessibility', async ({ page }) => {
     // 1. Patient is on dashboard
