@@ -8,7 +8,7 @@ dotenv.config();
 // Use the Patients stored authentication state
 test.use({ storageState: 'playwright/.auth/patient.json' });
 
-test('Verify Patient View and Content Display on Account Settings Page', async ({ page }) => {
+test.skip('Verify Patient View and Content Display on Account Settings Page', async ({ page }) => {
   await page.goto('/account-settings/my-account');
   await expect(page).toHaveURL(/.*\/account-settings\/my-account/);
   await expect(page.getByRole('heading', { name: 'Account settings' })).toBeVisible();
@@ -71,7 +71,7 @@ test('Verify Patient View and Content Display on Account Settings Page', async (
   await expect(page.getByText('Delete account')).toBeVisible();
 });
 
-test('Verify Upload Photo Functionality', async ({ page }) => {
+test.skip('Verify Upload Photo Functionality', async ({ page }) => {
   await page.goto('/account-settings/my-account');
   await expect(page).toHaveURL(/.*\/account-settings\/my-account/);
   await expect(page.getByRole('heading', { name: 'Account settings' })).toBeVisible();

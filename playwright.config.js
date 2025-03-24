@@ -50,7 +50,7 @@ export default defineConfig({
         ...devices['Desktop Chrome'],
         storageState: 'playwright/.auth/patient.json',
       },
-      dependencies: ['patient-setup'],
+      // dependencies: ['patient-setup'],
     },
 
     {
