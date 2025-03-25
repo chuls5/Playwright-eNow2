@@ -5,8 +5,7 @@ test('Verify Content on Login Page', async ({ page }) => {
   await page.goto('/sign-in');
 
   // 2. Observe login page!
-
-  // Left side
+    // Left side
   await expect(page.getByText('EnglishLoginWelcome back!Email*Next© 2002-2025 GlobalMed®. All Rights Reserved')).toBeVisible();
   await expect(page.locator('#root')).toMatchAriaSnapshot(`
     - img "English"
@@ -19,8 +18,7 @@ test('Verify Content on Login Page', async ({ page }) => {
     - button "Next"
     - text: /© \\d+-\\d+ GlobalMed®\\. All Rights Reserved/
   `);
-
-  // Right side
+    // Right side
   await expect(page.getByText('EnglishLoginWelcome back!Email*Next© 2002-2025 GlobalMed®. All Rights Reserved')).toBeVisible();
   await expect(page.locator('#root')).toMatchAriaSnapshot(`
     - img "English"
@@ -36,28 +34,44 @@ test('Verify Content on Login Page', async ({ page }) => {
   await expect(page.getByRole('img', { name: 'welcome' })).toBeVisible();
 
   // 3. Verify that the following elements are displayed
-
-  // Language dropdown
+    // Language dropdown
   await expect(page.getByTestId('popover-trigger').locator('div').filter({ hasText: 'English' })).toBeVisible();
-
-  // Screen label
+    // Screen label
   await expect(page.getByRole('heading', { name: 'Login' })).toBeVisible();
   await expect(page.getByRole('heading')).toContainText('Login');
-
-  // Welcome message
+    // Welcome message
   await expect(page.locator('#root')).toContainText('Welcome back!');
-
-  // Email field
+    // Email field
   await expect(page.locator('label')).toContainText('Email*');
   const placeholder = page.getByRole('textbox', { name: 'Enter email' });
   await expect(placeholder).toBeVisible();
-
-  // Next button
+    // Next button
   const nextButton = page.getByRole('button', { name: 'Next' });
   await expect(nextButton).toBeVisible();
-
-  // Footer text
+    // Footer text
   const footer = page.getByText('© 2002-2025 GlobalMed®. All Rights Reserved');
   await expect(footer).toBeVisible();
+}
+);
+
+test('Verify "Language" Dropdown on Login Page', async ({ page }) => {
+  // 1. Go to login page
+  await page.goto('/sign-in');
+
+  // 2. Verify the "Language" dropdown is visible at the top left of the page
+  await expect(page.getByTestId('popover-trigger').locator('div').filter({ hasText: 'English' })).toBeVisible();
+  await expect(page.getByRole('paragraph')).toContainText('English');
+
+  // 3. Click on the Language dropdown
+  await page.getByTestId('icon').click();
+
+  // 4. Select Spanish 
+  await page.getByTestId('item Spanish').click();
+  await expect(page.getByTestId('popover-trigger').locator('div').filter({ hasText: 'Spanish' })).toBeVisible();
+
+  // 5. Confirm that dropdown menu is closed
+  await page.getByTestId('icon').click();
+  await page.getByTestId('item English').click();
+  await expect(page.getByRole('heading', { name: 'Login' })).toBeVisible();
 }
 );
