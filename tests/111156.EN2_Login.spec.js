@@ -75,3 +75,21 @@ test('Verify "Language" Dropdown on Login Page', async ({ page }) => {
   await expect(page.getByRole('heading', { name: 'Login' })).toBeVisible();
 }
 );
+
+test('[Negative] Verify Login Behavior with Empty Email Field', async ({ page }) => {
+  // 1. Go to login page
+  await page.goto('/sign-in');
+
+  // 2. Verify that email textbox is displayed with the correct placeholder
+  const emailField = page.getByRole('textbox', { name: 'Enter email' });
+  await expect(emailField).toBeVisible();
+
+  // 3. Click on Next button without entering an email
+  await page.getByRole('button', { name: 'Next' }).click();
+  await expect(page.getByTestId('input').getByRole('paragraph')).toContainText('Enter an email');
+  
+  // 4. Observe the "Next" button 
+  await expect(page.getByRole('button', { name: 'Next' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Next' })).toBeEnabled();
+}
+);
