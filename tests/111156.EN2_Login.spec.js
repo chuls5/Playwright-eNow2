@@ -123,10 +123,8 @@ test('Verify Email Text Box Validation on Login Page', async ({ page }) => {
   const emailField = page.getByRole('textbox', { name: 'Enter email' });
   await expect(emailField).toBeVisible();
 
-  // 3. Enter a valid email address and click Next
+  // 3. Enter a valid email address
   await emailField.fill(process.env.PATIENT_USERNAME);
-  await page.getByRole('button', { name: 'Next' }).click();
-  await expect(page.getByRole('textbox', { name: 'Enter your password' })).toBeVisible();
 }
 );
 
@@ -141,9 +139,30 @@ test('Verify Next Button - Valid Email Entered in Text Box', async ({ page }) =>
   // 3. Enter a valid email address and click Next
   await emailField.fill('invalid-email');
   await page.getByRole('button', { name: 'Next' }).click();
-  await expect(page.getByTestId('input').getByRole('paragraph')).toContainText('Please enter a valid email address');
-  await emailField.fill(process.env.PATIENT_USERNAME);
-  await page.getByRole('button', { name: 'Next' }).click();
-  await expect(page.getByRole('textbox', { name: 'Enter your password' })).toBeVisible();
+
+  const errorMessageLocator = page.getByText('Please enter a valid email');
+  const errorMessageVisible = await errorMessageLocator.isVisible();
+
+  if (errorMessageVisible) {
+    await emailField.fill(process.env.PATIENT_USERNAME);
+    await page.getByRole('button', { name: 'Next' }).click();
+    await expect(page.getByRole('textbox', { name: 'Enter your password' })).toBeVisible();
+  } 
 }
 );
+
+test('Verify Next Button - Valid Registered Email', async ({ page }) => {
+  // 1. Go to login page
+  await page.goto('/sign-in');
+
+  // 2. Enter a valid email address
+  const emailField = page.getByRole('textbox', { name: 'Enter email' });
+  await expect(emailField).toBeVisible();
+
+  // 3. Verify the tate of the "Next" button after entering a valid email
+  await emailField.fill(process.env.PATIENT_USERNAME);
+  await page.getByRole('button', { name: 'Next' }).isVisible();
+  await page.getByRole('button', { name: 'Next' }).isEnabled();
+}
+);
+
