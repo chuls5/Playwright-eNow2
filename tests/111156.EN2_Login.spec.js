@@ -93,3 +93,39 @@ test('[Negative] Verify Login Behavior with Empty Email Field', async ({ page })
   await expect(page.getByRole('button', { name: 'Next' })).toBeEnabled();
 }
 );
+
+test('[Negative] Verify Email Text Box Validation on Login Page', async ({ page }) => {
+  // 1. Go to login page
+  await page.goto('/sign-in');
+
+  // 2. Enter an invalid email address
+  const emailField = page.getByRole('textbox', { name: 'Enter email' });
+  await expect(emailField).toBeVisible();
+
+  // 3. Leave the invalid email in the textbox and attempt to click next 
+  await emailField.fill('invalid-email');
+  await page.getByRole('button', { name: 'Next' }).click();
+  await expect(page.getByTestId('input').getByRole('paragraph')).toContainText('Please enter a valid email address');
+  await page.getByRole('button', { name: 'Next' }).click();
+  await expect(page.getByText('Please enter a valid email')).toBeVisible();
+  await page.getByRole('button', { name: 'Next' }).click();
+  await page.getByText('Please enter a valid email').click();
+  await expect(page.getByRole('button', { name: 'Next' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Next' })).toBeEnabled();
+}
+);
+
+test('Verify Email Text Box Validation on Login Page', async ({ page }) => {
+  // 1. Go to login page
+  await page.goto('/sign-in');
+
+  // 2. Enter a valid email address
+  const emailField = page.getByRole('textbox', { name: 'Enter email' });
+  await expect(emailField).toBeVisible();
+
+  // 3. Enter a valid email address and click Next
+  await emailField.fill(process.env.PATIENT_USERNAME);
+  await page.getByRole('button', { name: 'Next' }).click();
+  await expect(page.getByRole('textbox', { name: 'Enter your password' })).toBeVisible();
+}
+);
