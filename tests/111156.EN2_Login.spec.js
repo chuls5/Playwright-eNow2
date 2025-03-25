@@ -122,13 +122,27 @@ test('Verify Email Text Box Validation on Login Page', async ({ page }) => {
   // 2. Enter a valid email address
   const emailField = page.getByRole('textbox', { name: 'Enter email' });
   await expect(emailField).toBeVisible();
-
-  // 3. Enter a valid email address
   await emailField.fill(process.env.PATIENT_USERNAME);
 }
 );
 
-test('Verify Next Button - Valid Email Entered in Text Box', async ({ page }) => {
+test('Verify Next Button - Valid (NOT REGISTERED) Email Entered in Text Box', async ({ page }) => {
+  // 1. Go to login page
+  await page.goto('/sign-in');
+
+  // 2. Enter a valid email address
+  const emailField = page.getByRole('textbox', { name: 'Enter email' });
+  await expect(emailField).toBeVisible();
+
+  // 3. Enter a valid (NOT REGISTERED) email address and click Next
+  await page.getByRole('textbox', { name: 'Enter email' }).fill('valid-email991@gmail.com');
+  await page.getByRole('button', { name: 'Next' }).click();
+  await expect(page.getByText('Couldn\'t find an account for')).toBeVisible();
+  await expect(page.getByTestId('input').getByRole('paragraph')).toContainText('Couldn\'t find an account for the email address provided');
+}
+);
+
+test('Verify Next Button - Valid and Registered Email', async ({ page }) => {
   // 1. Go to login page
   await page.goto('/sign-in');
 
@@ -148,21 +162,6 @@ test('Verify Next Button - Valid Email Entered in Text Box', async ({ page }) =>
     await page.getByRole('button', { name: 'Next' }).click();
     await expect(page.getByRole('textbox', { name: 'Enter your password' })).toBeVisible();
   } 
-}
-);
-
-test('Verify Next Button - Valid Registered Email', async ({ page }) => {
-  // 1. Go to login page
-  await page.goto('/sign-in');
-
-  // 2. Enter a valid email address
-  const emailField = page.getByRole('textbox', { name: 'Enter email' });
-  await expect(emailField).toBeVisible();
-
-  // 3. Verify the tate of the "Next" button after entering a valid email
-  await emailField.fill(process.env.PATIENT_USERNAME);
-  await page.getByRole('button', { name: 'Next' }).isVisible();
-  await page.getByRole('button', { name: 'Next' }).isEnabled();
 }
 );
 
