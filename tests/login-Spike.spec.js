@@ -16,12 +16,12 @@ test('test login spike', async ({ page }) => {
 
   // Optional~
   // Wait for the "Skip" button to load & then click it
-      // const skipButton = page.getByRole('button', { name: 'Skip' });
-      // await expect(async () => {
-      //   await skipButton.waitFor({ timeout: 500 });
-      //   await expect(skipButton).toBeVisible();
-      // }).toPass();
-      // await skipButton.click();
+  // const skipButton = page.getByRole('button', { name: 'Skip' });
+  // await expect(async () => {
+  //   await skipButton.waitFor({ timeout: 500 });
+  //   await expect(skipButton).toBeVisible();
+  // }).toPass();
+  // await skipButton.click();
 
   //Otherwise~
     // Patient goes through the questionare
