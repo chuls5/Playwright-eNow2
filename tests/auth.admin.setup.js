@@ -4,7 +4,7 @@ import dotenv from 'dotenv';
 // Load environment variables
 dotenv.config();
 
-test.describe('patient-setup', () => {
+test.describe('admin-setup', () => {
   test('authenticate patient', async ({ page }) => {
     // Navigate to the sign-in page using BASE_URL from .env
     await page.goto(process.env.BASE_URL);
@@ -18,7 +18,7 @@ test.describe('patient-setup', () => {
     await page.getByRole('button', { name: 'Log In' }).click();
     
     // Wait for successful login and store authentication state
-    await page.waitForURL('**/dashboard');
+    await page.waitForURL('**/users-table');
     await page.context().storageState({ path: 'playwright/.auth/admin.json' });
   });
 });

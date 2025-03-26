@@ -10,14 +10,14 @@ const baseURL = process.env.BASE_URL || 'http://localhost:3000';
  */
 export default defineConfig({
   testDir: './tests',
-  timeout: 60000 *2, 
+  timeout: 60000,
   expect: {
-    timeout: 10000 *2, 
+    timeout: 10000,
   },
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
-  workers: process.env.CI ? 2 : 1, 
+  workers: process.env.CI ? 2 : 1,
   // Reporter to use
   reporter: [
     ['html', { outputFolder: 'playwright-report' }],
@@ -45,6 +45,11 @@ export default defineConfig({
     },
 
     {
+      name: 'admin-setup', // New project for admin setup
+      testMatch: /.*auth\.admin\.setup\.js/, // Match your admin setup file
+    },
+
+    {
       name: 'patient-chromium',
       use: { 
         ...devices['Desktop Chrome'],
@@ -60,6 +65,15 @@ export default defineConfig({
         storageState: 'playwright/.auth/provider.json',
       },
       dependencies: ['provider-setup'],
+    },
+
+    {
+      name: 'admin-chromium', // New project for admin role
+      use: { 
+        ...devices['Desktop Chrome'],
+        storageState: 'playwright/.auth/admin.json', // Specify the storage state for admin
+      },
+      dependencies: ['admin-setup'], // Ensure admin setup runs before this
     },
 
     {
@@ -79,6 +93,5 @@ export default defineConfig({
       },
       dependencies: ['patient-setup'],
     },
-
   ],
 });
