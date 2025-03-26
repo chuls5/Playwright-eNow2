@@ -16,12 +16,12 @@ test('schedule appointment with specific provider', async ({ page }) => {
   await page.getByText('Schedule an appointment').click();
 
   // Handle optional skip button
-  const skipButton = page.getByRole('button', { name: 'Skip' });
+  const continueButton = page.getByRole('button', { name: 'Continue' });
   await expect(async () => {
-    await skipButton.waitFor({ timeout: 500 });
-    await expect(skipButton).toBeVisible();
+    await continueButton.waitFor({ timeout: 500 });
+    await expect(continueButton).toBeVisible();
   }).toPass();
-  await skipButton.click();
+  await continueButton.click();
 
   // Change provider
   await changeProvider(page);
