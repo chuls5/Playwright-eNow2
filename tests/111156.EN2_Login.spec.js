@@ -112,7 +112,10 @@ test.describe('Login Page Tests', () => {
     await passwordField.fill(process.env.PATIENT_PASSWORD);
     await page.getByRole('button', { name: 'Log In' }).click();
 
-    // Verify dashboard
-    await expect(page.getByText('Dashboard')).toBeVisible();
+    // Verify Dashboard Navigation
+    await expect(async () => {
+      await page.waitForSelector('[data-testid="navigation"]', { timeout: 500 });
+      await expect(page.locator('[data-testid="navigation"]')).toBeVisible();
+    }).toPass();
   });
 });
