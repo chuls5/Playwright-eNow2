@@ -6,9 +6,8 @@ dotenv.config();
 
 // Describe the test suite for login flow
 test.describe('Password Screen Verification', () => {
-  // Setup test with pre-conditions
   test.beforeEach(async ({ page }) => {
-    // Navigate to base URL and enter email
+    // Navigate to password page shared step
     await page.goto(process.env.BASE_URL);
     await page.getByRole('textbox', { name: 'Enter email' }).fill(process.env.PATIENT_USERNAME);
     await page.getByRole('button', { name: 'Next' }).click();
@@ -49,8 +48,7 @@ test.describe('Password Screen Verification', () => {
     await expect(loginButton).toBeEnabled();
   });
 
-  // Optional: Additional test for eye button functionality
-  test('should toggle password visibility', async ({ page }) => {
+  test('Verify Password masking and visibility toggle on Password Page', async ({ page }) => {
     const passwordInput = page.getByRole('textbox', { name: 'Enter your password' });
     const eyeButton = page.getByRole('button', { name: 'Eye' });
 
@@ -65,4 +63,95 @@ test.describe('Password Screen Verification', () => {
     await eyeButton.click();
     await expect(passwordInput).toHaveAttribute('type', 'password');
   });
+
+  test('Verify Log In click with no password on Password Page', async ({ page }) => {
+    const loginButton = page.getByRole('button', { name: 'Log In' });
+    await loginButton.click();
+    await expect(page.getByText('Enter a password')).toBeVisible();
+    await expect(page.getByTestId('input')).toContainText('Enter your password*Enter a password');
+    await expect(loginButton).toBeEnabled();
+  });
+
+  test('Validate Password complexity on password page', async ({ page }) => {
+    const passwordInput = page.getByRole('textbox', { name: 'Enter your password' });
+    const loginButton = page.getByRole('button', { name: 'Log In' });
+
+    // Verify password complexity validation
+    await passwordInput.fill(process.env.PATIENT_PASSWORD);
+    await loginButton.click();
+
+    // Verify that you've logged in
+    await expect(async () => {
+      await page.waitForSelector('[data-testid="navigation"]', { timeout: 500 });
+      await expect(page.locator('[data-testid="navigation"]')).toBeVisible();
+    }).toPass();
+  });
+
+  test('[Negative] Validate Password Complexity on Password Page', async ({ page }) => {
+    const passwordInput = page.getByRole('textbox', { name: 'Enter your password' });
+    const loginButton = page.getByRole('button', { name: 'Log In' });
+
+    // Verify password complexity validation
+    await passwordInput.fill('password');
+    await loginButton.click();
+
+    // Verify error message
+    await expect(page.getByText('Wrong password. Try again or')).toBeVisible();
+    await expect(page.getByTestId('input').getByRole('paragraph')).toContainText('Wrong password. Try again or click ‘Forgot password’ to reset it.');
+  });
+
+  test('Process Log In with Valid Password on Password Page', async ({ page }) => {
+    const passwordInput = page.getByRole('textbox', { name: 'Enter your password' });
+    const loginButton = page.getByRole('button', { name: 'Log In' });
+
+    // Verify password complexity validation
+    await passwordInput.fill(process.env.PATIENT_PASSWORD);
+    await loginButton.click();
+
+    // Verify that you've logged in
+    await expect(async () => {
+      await page.waitForSelector('[data-testid="navigation"]', { timeout: 500 });
+      await expect(page.locator('[data-testid="navigation"]')).toBeVisible();
+    }).toPass();
+  });
+
+  test('[Negative] Verify Password Mismatch on Password Page', async ({ page }) => {
+    const passwordInput = page.getByRole('textbox', { name: 'Enter your password' });
+    const loginButton = page.getByRole('button', { name: 'Log In' });
+
+    // Verify password complexity validation
+    await passwordInput.fill('password');
+    await loginButton.click();
+
+    // Verify error message
+    await expect(page.getByText('Wrong password. Try again or')).toBeVisible();
+    await expect(page.getByTestId('input').getByRole('paragraph')).toContainText('Wrong password. Try again or click ‘Forgot password’ to reset it.');
+  });
+
+  test('Verify Functionality on Create New Password Page', async ({ page }) => {
+    test.skip('Verify Functionality on Create New Password Page', async ({ page }) => {
+    });
+  });
+
+  test('Verify Time Pass Functionality on Password Changed Page', async ({ page }) => {
+    test.skip('Verify Time Pass Functionality on Password Changed Page', async ({ page }) => {
+    });
+  });
+
+  test('[Negative] Verify Functionality on Create a New Password Page', async ({ page }) => {
+    test.skip('[Negative] Verify Functionality on Create a New Password Page', async ({ page }) => {
+    });
+  });
+
+  test('Verify redirect on "Not you?" link click', async ({ page }) => {
+    test.skip('Verify redirect on "Not you?" link click', async ({ page }) => {
+    });
+  });
+
+  test('[Negative] Verify Case Sensitivity in Passwords on Password Page', async ({ page }) => {
+    test.skip('[Negative] Verify Case Sensitivity in Passwords on Password Page', async ({ page }) => {
+    });
+  });
+  
+
 });

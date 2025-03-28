@@ -2,7 +2,7 @@ import { defineConfig, devices } from '@playwright/test';
 import dotenv from 'dotenv';
 dotenv.config();
 
-const baseURL = process.env.BASE_URL || 'http://localhost:3000';
+const baseURL = process.env.BASE_URL ?? 'http://localhost:3000';
 
 export default defineConfig({
   testDir: './tests',
@@ -29,27 +29,26 @@ export default defineConfig({
     video: 'on-first-retry',
   },
   
-  // Configure projects for major browsers
   projects: [
-    // Authentication Setup Projects
+    // Authentication Setup Projects (always run first)
     {
       name: 'patient-setup',
-      testMatch: /.*auth\.patient\.setup\.js/,
+      testMatch: /.*auth\.patient\.setup\.js$/i,
     },
     {
       name: 'provider-setup',
-      testMatch: /.*auth\.provider\.setup\.js/,
+      testMatch: /.*auth\.provider\.setup\.js$/i,
     },
     {
       name: 'admin-setup',
-      testMatch: /.*auth\.admin\.setup\.js/,
+      testMatch: /.*auth\.admin\.setup\.js$/i,
     },
     {
       name: 'coordinator-setup',
-      testMatch: /.*auth\.coordinator\.setup\.js/,
+      testMatch: /.*auth\.coordinator\.setup\.js$/i,
     },
     
-    // Patient Test Projects
+    // Patient Test Projects (Chromium, Safari, Edge)
     {
       name: 'patient-chromium',
       use: {
@@ -57,12 +56,6 @@ export default defineConfig({
         storageState: 'playwright/.auth/patient.json',
       },
       dependencies: ['patient-setup'],
-      testMatch: [
-        /108921\.EN2_Password\.spec\.js/,
-        /108922\.EN2_Forgot_Password\.spec\.js/,
-        /109075\.EN2_Patient_DashBoard\.spec\.js/,
-        /111156\.EN2_Login\.spec\.js/
-      ],
     },
     {
       name: 'patient-safari',
@@ -71,12 +64,6 @@ export default defineConfig({
         storageState: 'playwright/.auth/patient.json',
       },
       dependencies: ['patient-setup'],
-      testMatch: [
-        /108921\.EN2_Password\.spec\.js/,
-        /108922\.EN2_Forgot_Password\.spec\.js/,
-        /109075\.EN2_Patient_DashBoard\.spec\.js/,
-        /111156\.EN2_Login\.spec\.js/
-      ],
     },
     {
       name: 'patient-edge',
@@ -85,15 +72,61 @@ export default defineConfig({
         storageState: 'playwright/.auth/patient.json',
       },
       dependencies: ['patient-setup'],
-      testMatch: [
-        /108921\.EN2_Password\.spec\.js/,
-        /108922\.EN2_Forgot_Password\.spec\.js/,
-        /109075\.EN2_Patient_DashBoard\.spec\.js/,
-        /111156\.EN2_Login\.spec\.js/
-      ],
     },
-    
-    // Admin Test Projects
+
+    // Provider Test Projects (Chromium, Safari, Edge)
+    {
+      name: 'provider-chromium',
+      use: {
+        ...devices['Desktop Chrome'],
+        storageState: 'playwright/.auth/provider.json',
+      },
+      dependencies: ['provider-setup'],
+    },
+    {
+      name: 'provider-safari',
+      use: {
+        ...devices['Desktop Safari'],
+        storageState: 'playwright/.auth/provider.json',
+      },
+      dependencies: ['provider-setup'],
+    },
+    {
+      name: 'provider-edge',
+      use: {
+        ...devices['Desktop Edge'],
+        storageState: 'playwright/.auth/provider.json',
+      },
+      dependencies: ['provider-setup'],
+    },
+
+    // Coordinator Test Projects (Chromium, Safari, Edge)
+    {
+      name: 'coordinator-chromium',
+      use: {
+        ...devices['Desktop Chrome'],
+        storageState: 'playwright/.auth/coordinator.json',
+      },
+      dependencies: ['coordinator-setup'],
+    },
+    {
+      name: 'coordinator-safari',
+      use: {
+        ...devices['Desktop Safari'],
+        storageState: 'playwright/.auth/coordinator.json',
+      },
+      dependencies: ['coordinator-setup'],
+    },
+    {
+      name: 'coordinator-edge',
+      use: {
+        ...devices['Desktop Edge'],
+        storageState: 'playwright/.auth/coordinator.json',
+      },
+      dependencies: ['coordinator-setup'],
+    },
+
+    // Admin Test Projects (Chromium, Safari, Edge)
     {
       name: 'admin-chromium',
       use: {
