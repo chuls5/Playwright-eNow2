@@ -89,7 +89,7 @@ test.describe('Forgot Password Functionality', () => {
         test.skip(true, 'Email verification requires additional setup');
     });
 
-    test.skip('Verify Creation of a New Password that matches old password', async ({ page }) => {
+    test.skip('[Negative] Verify Creation of a New Password that matches old password', async ({ page }) => {
         // Placeholder for future implementation
         test.skip(true, 'Requires complex setup for password reset flow');
     });

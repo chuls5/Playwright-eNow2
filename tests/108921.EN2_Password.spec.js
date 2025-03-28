@@ -129,28 +129,28 @@ test.describe('Password Screen Verification', () => {
   });
 
   test('Verify Functionality on Create New Password Page', async ({ page }) => {
-    test.skip('Verify Functionality on Create New Password Page', async ({ page }) => {
-    });
+      // Placeholder for future implementation
+      test.skip(true, 'Verify Functionality on Create New Password Page requires additional setup');
   });
 
   test('Verify Time Pass Functionality on Password Changed Page', async ({ page }) => {
-    test.skip('Verify Time Pass Functionality on Password Changed Page', async ({ page }) => {
-    });
+      // Placeholder for future implementation
+      test.skip(true, 'Verify Time Pass Functionality requires additional setup');
   });
 
   test('[Negative] Verify Functionality on Create a New Password Page', async ({ page }) => {
-    test.skip('[Negative] Verify Functionality on Create a New Password Page', async ({ page }) => {
-    });
+      // Placeholder for future implementation
+      test.skip(true, '[Negative] Verify Functionality on Create a New Password Page requires additional setup');
   });
 
   test('Verify redirect on "Not you?" link click', async ({ page }) => {
-    test.skip('Verify redirect on "Not you?" link click', async ({ page }) => {
-    });
+      // Placeholder for future implementation
+      test.skip(true, 'Verify redirect on "Not you?" requires additional setup');
   });
 
   test('[Negative] Verify Case Sensitivity in Passwords on Password Page', async ({ page }) => {
-    test.skip('[Negative] Verify Case Sensitivity in Passwords on Password Page', async ({ page }) => {
-    });
+      // Placeholder for future implementation
+      test.skip(true, '[Negative] Verify Case Sensitivity in Password requires additional setup');
   });
   
 

@@ -15,13 +15,11 @@ export default defineConfig({
   retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? 2 : 1,
   
-  // Reporter to use
   reporter: [
     ['html', { outputFolder: 'playwright-report' }],
     ['list']
   ],
   
-  // Shared settings for all projects
   use: {
     baseURL,
     trace: 'on-first-retry',
@@ -56,6 +54,11 @@ export default defineConfig({
         storageState: 'playwright/.auth/patient.json',
       },
       dependencies: ['patient-setup'],
+      testMatch: [
+        /108921\.EN2_Password\.spec\.js/,
+        /108922\.EN2_Forgot_Password\.spec\.js/,
+        /111156\.EN2_Login\.spec\.js/
+      ]
     },
     {
       name: 'patient-safari',
@@ -64,6 +67,11 @@ export default defineConfig({
         storageState: 'playwright/.auth/patient.json',
       },
       dependencies: ['patient-setup'],
+      testMatch: [
+        /108921\.EN2_Password\.spec\.js/,
+        /108922\.EN2_Forgot_Password\.spec\.js/,
+        /111156\.EN2_Login\.spec\.js/
+      ]
     },
     {
       name: 'patient-edge',
@@ -72,6 +80,11 @@ export default defineConfig({
         storageState: 'playwright/.auth/patient.json',
       },
       dependencies: ['patient-setup'],
+      testMatch: [
+        /108921\.EN2_Password\.spec\.js/,
+        /108922\.EN2_Forgot_Password\.spec\.js/,
+        /111156\.EN2_Login\.spec\.js/
+      ]
     },
 
     // Provider Test Projects (Chromium, Safari, Edge)
@@ -82,6 +95,9 @@ export default defineConfig({
         storageState: 'playwright/.auth/provider.json',
       },
       dependencies: ['provider-setup'],
+      testMatch: [
+        // Add specific provider tests here if needed
+      ]
     },
     {
       name: 'provider-safari',
@@ -90,6 +106,9 @@ export default defineConfig({
         storageState: 'playwright/.auth/provider.json',
       },
       dependencies: ['provider-setup'],
+      testMatch: [
+        // Add specific provider tests here if needed
+      ]
     },
     {
       name: 'provider-edge',
@@ -98,6 +117,9 @@ export default defineConfig({
         storageState: 'playwright/.auth/provider.json',
       },
       dependencies: ['provider-setup'],
+      testMatch: [
+        // Add specific provider tests here if needed
+      ]
     },
 
     // Coordinator Test Projects (Chromium, Safari, Edge)
@@ -108,6 +130,9 @@ export default defineConfig({
         storageState: 'playwright/.auth/coordinator.json',
       },
       dependencies: ['coordinator-setup'],
+      testMatch: [
+        // Add specific coordinator tests here if needed
+      ]
     },
     {
       name: 'coordinator-safari',
@@ -116,6 +141,9 @@ export default defineConfig({
         storageState: 'playwright/.auth/coordinator.json',
       },
       dependencies: ['coordinator-setup'],
+      testMatch: [
+        // Add specific coordinator tests here if needed
+      ]
     },
     {
       name: 'coordinator-edge',
@@ -124,6 +152,9 @@ export default defineConfig({
         storageState: 'playwright/.auth/coordinator.json',
       },
       dependencies: ['coordinator-setup'],
+      testMatch: [
+        // Add specific coordinator tests here if needed
+      ]
     },
 
     // Admin Test Projects (Chromium, Safari, Edge)
