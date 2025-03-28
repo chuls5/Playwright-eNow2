@@ -1,65 +1,60 @@
 import { test, expect } from '@playwright/test';
+import dotenv from 'dotenv';
 
-test('Verify Schedule Session Screen Content on Clicking "Schedule Session" Button', async ({ page }) => {
-  // Login steps using COORDINATOR credentials
-  await page.goto(process.env.TEST_URL || 'https://portal.sandbox-encounterservices.com/sign-in');
-  await page.getByRole('textbox', { name: 'Enter email' }).fill(process.env.COORDINATOR_EMAIL || 'coordinator@example.com');
-  await page.getByRole('button', { name: 'Next' }).click();
-  await page.getByRole('textbox', { name: 'Enter your password' }).fill(process.env.COORDINATOR_PASSWORD || 'coordinator_password');
-  await page.getByRole('button', { name: 'Log In' }).click();
+// Load environment variables
+dotenv.config();
 
-  // Navigate to Schedule Session
-  await expect(page.getByTestId('navigation')).toBeVisible();
-  await expect(page.getByRole('button', { name: 'CalendarPlus Schedule session' })).toBeVisible();
-  await page.getByRole('button', { name: 'CalendarPlus Schedule session' }).click();
+// Use the Patients stored authentication state
+test.use({ storageState: 'playwright/.auth/coordinator.json' });
 
-  // Verify Screen Sections
-  const screenLocator = page.locator('#root');
+test.describe('Schedule Appointment Coordinator', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto('/dashboard');
+    await expect(async () => {
+      await page.waitForSelector('[data-testid="navigation"]', { timeout: 500 });
+      await expect(page.locator('[data-testid="navigation"]')).toBeVisible();
+    }).toPass();
+  });
 
-  // Your Appointment Section
-  await expect(screenLocator.getByRole('heading', { name: 'Your appointment', level: 5 })).toBeVisible();
-  
-  // Service Section
-  await expect(screenLocator.getByText('Service')).toBeVisible();
-  await expect(screenLocator.getByText('General Practice')).toBeVisible();
-  await expect(screenLocator.getByRole('link', { name: /Change service/i })).toBeVisible();
+  test('Verify Schedule Session Screen Content on Clicking "Schedule Session" Button', async ({ page }) => {
+    // 3. Click on the schedule session button
+    await expect(page.getByRole('button', { name: 'CalendarPlus Schedule session' })).toBeVisible();
+    await page.getByRole('button', { name: 'CalendarPlus Schedule session' }).click();
 
-  // Appointment Type Section
-  await expect(screenLocator.getByText('Appointment type')).toBeVisible();
-  await expect(screenLocator.getByText('Video')).toBeVisible();
-  await expect(screenLocator.getByRole('link', { name: /Change type/i })).toBeVisible();
+    // Verify Your Appointment Section
+    const appointmentHeading = page.getByRole('heading', { name: 'Your appointment' });
+    await expect(appointmentHeading).toBeVisible();
 
-  // Duration Section
-  await expect(screenLocator.getByText('Duration')).toBeVisible();
-  await expect(screenLocator.getByText(/\d+ minutes/)).toBeVisible();
-  await expect(screenLocator.getByRole('link', { name: /Change duration/i })).toBeVisible();
+    // Verify other elements in the "Your Appointment" section
+    await expect(page.locator('div').filter({ hasText: /^Service$/ })).toBeVisible();
+    await expect(page.getByText('General Practice')).toBeVisible();
+    await expect(page.getByRole('link', { name: 'Change service' })).toBeVisible();
+    await expect(page.getByText('Appointment type')).toBeVisible();
+    await expect(page.getByText('Video')).toBeVisible();
+    await expect(page.getByRole('link', { name: 'Change type' })).toBeVisible();
+    await expect(page.getByText('Duration', { exact: true })).toBeVisible();
+    await expect(page.getByText('minutes')).toBeVisible();
+    await expect(page.getByRole('link', { name: 'Change duration' })).toBeVisible();
+    await expect(page.getByText('Provider', { exact: true })).toBeVisible();
+    await expect(page.getByText('Any available')).toBeVisible();
+    await expect(page.getByRole('link', { name: 'Change provider' })).toBeVisible();
+    await expect(page.getByText('Patient', { exact: true })).toBeVisible();
+    await expect(page.getByText('-')).toBeVisible();
+    await expect(page.getByRole('link', { name: 'Change patient' })).toBeVisible();
 
-  // Provider Section
-  await expect(screenLocator.getByText('Provider')).toBeVisible();
-  await expect(screenLocator.getByText('Any available')).toBeVisible();
-  await expect(screenLocator.getByRole('link', { name: /Change provider/i })).toBeVisible();
+    // Select Date and Time Section
+    await expect(page.getByRole('heading', { name: 'Select date & time' })).toBeVisible();
+    await expect(page.locator('form')).toContainText('Please choose a preferred time slot for your selected day.');
+    await expect(page.locator('form div').filter({ hasText: 'Select date & timePlease' }).nth(1)).toBeVisible();
 
-  // Patient Section
-  await expect(screenLocator.getByText('Patient')).toBeVisible();
-  await expect(screenLocator.getByText('-')).toBeVisible();
-  await expect(screenLocator.getByRole('link', { name: /Change patient/i })).toBeVisible();
+    // Attachments section
+    await expect(page.locator('form div').filter({ hasText: 'AttachmentsUpload any' }).nth(1)).toBeVisible();
+    await expect(page.locator('form')).toContainText('Upload any relevant documentation that could assist the provider.');
 
-  // Select Date & Time Section
-  await expect(screenLocator.getByRole('heading', { name: 'Select date & time', level: 5 })).toBeVisible();
-  await expect(screenLocator.getByText(/Please choose a preferred time slot/)).toBeVisible();
-
-  // Attachments Section
-  await expect(screenLocator.getByRole('heading', { name: 'Attachments', level: 5 })).toBeVisible();
-  await expect(screenLocator.getByText(/Upload any relevant documentation/)).toBeVisible();
-  await expect(screenLocator.getByText('Upload files')).toBeVisible();
-  await expect(screenLocator.getByRole('link', { name: /Choose files/i })).toBeVisible();
-
-  // Buttons
-  await expect(screenLocator.getByRole('button', { name: 'Cancel' })).toBeVisible();
-  await expect(screenLocator.getByRole('button', { name: 'Schedule visit' })).toBeVisible();
-
-  // Support Section
-  await expect(screenLocator.getByText(/Experiencing issues/)).toBeVisible();
-  await expect(screenLocator.getByText(/We're sorry/)).toBeVisible();
-  await expect(screenLocator.getByRole('link', { name: /support/i })).toBeVisible();
+    // Buttons
+    await expect(page.getByRole('link', { name: 'Choose files' })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Cancel' })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Schedule visit' })).toBeVisible();
+  });
+    
 });

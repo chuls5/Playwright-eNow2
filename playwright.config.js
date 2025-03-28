@@ -131,8 +131,8 @@ export default defineConfig({
       },
       dependencies: ['coordinator-setup'],
       testMatch: [
-        // Add specific coordinator tests here if needed
-      ]
+        /109104\.EN2_Schedule_Appointment_Coordinator\.spec\.js/
+      ],
     },
     {
       name: 'coordinator-safari',
@@ -142,8 +142,8 @@ export default defineConfig({
       },
       dependencies: ['coordinator-setup'],
       testMatch: [
-        // Add specific coordinator tests here if needed
-      ]
+        /109104\.EN2_Schedule_Appointment_Coordinator\.spec\.js/
+      ],
     },
     {
       name: 'coordinator-edge',
@@ -153,8 +153,8 @@ export default defineConfig({
       },
       dependencies: ['coordinator-setup'],
       testMatch: [
-        // Add specific coordinator tests here if needed
-      ]
+        /109104\.EN2_Schedule_Appointment_Coordinator\.spec\.js/
+      ],
     },
 
     // Admin Test Projects (Chromium, Safari, Edge)
