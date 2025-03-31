@@ -1,8 +1,6 @@
 import { test, expect } from '@playwright/test';
 
-// Setup a test suite with beforeEach to reduce repetition
 test.describe('Login Page Tests', () => {
-  // Reusable setup to navigate to sign-in page before each test
   test.beforeEach(async ({ page }) => {
     await page.goto('/sign-in');
   });

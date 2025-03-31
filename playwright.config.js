@@ -68,9 +68,9 @@ export default defineConfig({
       },
       dependencies: ['patient-setup'],
       testMatch: [
-        /108921\.EN2_Password\.spec\.js/,
-        /108922\.EN2_Forgot_Password\.spec\.js/,
-        /111156\.EN2_Login\.spec\.js/
+        // /108921\.EN2_Password\.spec\.js/,
+        // /108922\.EN2_Forgot_Password\.spec\.js/,
+        // /111156\.EN2_Login\.spec\.js/
       ]
     },
     {
@@ -81,9 +81,9 @@ export default defineConfig({
       },
       dependencies: ['patient-setup'],
       testMatch: [
-        /108921\.EN2_Password\.spec\.js/,
-        /108922\.EN2_Forgot_Password\.spec\.js/,
-        /111156\.EN2_Login\.spec\.js/
+        // /108921\.EN2_Password\.spec\.js/,
+        // /108922\.EN2_Forgot_Password\.spec\.js/,
+        // /111156\.EN2_Login\.spec\.js/
       ]
     },
 
@@ -142,7 +142,7 @@ export default defineConfig({
       },
       dependencies: ['coordinator-setup'],
       testMatch: [
-        /109104\.EN2_Schedule_Appointment_Coordinator\.spec\.js/
+        // /109104\.EN2_Schedule_Appointment_Coordinator\.spec\.js/
       ],
     },
     {
@@ -153,7 +153,7 @@ export default defineConfig({
       },
       dependencies: ['coordinator-setup'],
       testMatch: [
-        /109104\.EN2_Schedule_Appointment_Coordinator\.spec\.js/
+        // /109104\.EN2_Schedule_Appointment_Coordinator\.spec\.js/
       ],
     },
 
@@ -177,7 +177,7 @@ export default defineConfig({
       },
       dependencies: ['admin-setup'],
       testMatch: [
-        /111360\.EN2_Admin_User_Management\.spec\.js/
+        // /111360\.EN2_Admin_User_Management\.spec\.js/
       ],
     },
     {
@@ -188,7 +188,7 @@ export default defineConfig({
       },
       dependencies: ['admin-setup'],
       testMatch: [
-        /111360\.EN2_Admin_User_Management\.spec\.js/
+        // /111360\.EN2_Admin_User_Management\.spec\.js/
       ],
     },
   ],

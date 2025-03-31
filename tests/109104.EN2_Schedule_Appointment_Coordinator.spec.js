@@ -68,8 +68,6 @@ test.describe('Schedule Appointment Coordinator', () => {
     const selectedDateElement = await page.locator(
         'div[class*="react-datepicker__day"][aria-selected="true"]'
     );
-
-    // Verify the selected date element exists
     await expect(selectedDateElement).toBeVisible();
 
     // Verify that time-slots are displayed
@@ -92,8 +90,6 @@ test.describe('Schedule Appointment Coordinator', () => {
     const selectedDateElement = await page.locator(
         'div[class*="react-datepicker__day"][aria-selected="true"]'
     );
-
-    // Verify the selected date element exists
     await expect(selectedDateElement).toBeVisible();
 
     // Wait for time slots to be displayed and select the first available one

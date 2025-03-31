@@ -1,48 +1,29 @@
 import { test, expect } from '@playwright/test';
 import dotenv from 'dotenv';
 
-// Load environment variables
 dotenv.config();
 
-// Describe the test suite for login flow
 test.describe('Password Screen Verification', () => {
   test.beforeEach(async ({ page }) => {
-    // Navigate to password page shared step
     await page.goto(process.env.BASE_URL);
     await page.getByRole('textbox', { name: 'Enter email' }).fill(process.env.PATIENT_USERNAME);
     await page.getByRole('button', { name: 'Next' }).click();
   });
 
-  // Main test case for password screen elements
   test('should display and interact with password screen elements correctly', async ({ page }) => {
-    // Heading verification
     await expect(page.getByRole('heading')).toContainText('Login');
-    
-    // Password input label verification
     await expect(page.getByText('Enter your password*')).toBeVisible();
-    
-    // Password input field verification
     const passwordInput = page.getByRole('textbox', { name: 'Enter your password' });
     await expect(passwordInput).toBeVisible();
     await expect(passwordInput).toHaveAttribute('type', 'password');
-
-    // Eye toggle button verification
     const eyeButton = page.getByRole('button', { name: 'Eye' });
     await expect(eyeButton).toBeVisible();
     await expect(eyeButton).toBeEnabled();
-    
-    // Forgot password link verification
     const forgotPassword = page.getByRole('link', { name: 'Forgot Password' });
     await expect(forgotPassword).toBeVisible();
-    
-    // Verify forgot password navigation
     await forgotPassword.click();
     await expect(page.getByRole('heading', { name: 'Forgot Password' })).toBeVisible();
-    
-    // Navigate back to password page
     await page.getByText('Back to password page').click();
-    
-    // Login button verification
     const loginButton = page.getByRole('button', { name: 'Log In' });
     await expect(loginButton).toBeVisible();
     await expect(loginButton).toBeEnabled();
@@ -51,15 +32,9 @@ test.describe('Password Screen Verification', () => {
   test('Verify Password masking and visibility toggle on Password Page', async ({ page }) => {
     const passwordInput = page.getByRole('textbox', { name: 'Enter your password' });
     const eyeButton = page.getByRole('button', { name: 'Eye' });
-
-    // Initial state verification
     await expect(passwordInput).toHaveAttribute('type', 'password');
-
-    // Toggle password visibility
     await eyeButton.click();
     await expect(passwordInput).toHaveAttribute('type', 'text');
-
-    // Toggle back
     await eyeButton.click();
     await expect(passwordInput).toHaveAttribute('type', 'password');
   });
@@ -76,8 +51,8 @@ test.describe('Password Screen Verification', () => {
     const passwordInput = page.getByRole('textbox', { name: 'Enter your password' });
     const loginButton = page.getByRole('button', { name: 'Log In' });
 
-    // Verify password complexity validation
-    await passwordInput.fill(process.env.PATIENT_PASSWORD);
+    // Verify password complexity validation with correct/VALID password
+    await passwordInput.fill(process.env.PATIENT_PASSWORD); 
     await loginButton.click();
 
     // Verify that you've logged in
@@ -91,7 +66,7 @@ test.describe('Password Screen Verification', () => {
     const passwordInput = page.getByRole('textbox', { name: 'Enter your password' });
     const loginButton = page.getByRole('button', { name: 'Log In' });
 
-    // Verify password complexity validation
+    // Verify password complexity validation with incorrect/INVALID password 
     await passwordInput.fill('password');
     await loginButton.click();
 
@@ -144,13 +119,13 @@ test.describe('Password Screen Verification', () => {
   });
 
   test('Verify redirect on "Not you?" link click', async ({ page }) => {
-      // Placeholder for future implementation
-      test.skip(true, 'Verify redirect on "Not you?" requires additional setup');
+      // Click on the "Not you?" link
+      test.skip(true, '[Negative] Verify Functionality on Create a New Password Page requires additional setup');
   });
 
   test('[Negative] Verify Case Sensitivity in Passwords on Password Page', async ({ page }) => {
-      // Placeholder for future implementation
-      test.skip(true, '[Negative] Verify Case Sensitivity in Password requires additional setup');
+      // Navigate to Password Page
+      test.skip(true, '[Negative] Verify Functionality on Create a New Password Page requires additional setup');
   });
   
 
