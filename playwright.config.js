@@ -166,7 +166,8 @@ export default defineConfig({
       },
       dependencies: ['admin-setup'],
       testMatch: [
-        /111360\.EN2_Admin_User_Management\.spec\.js/
+        /111360\.EN2_Admin_User_Management\.spec\.js/,
+        /111381\.EN2_Admin_Institution_Profile\.spec\.js/
       ],
     },
     {
