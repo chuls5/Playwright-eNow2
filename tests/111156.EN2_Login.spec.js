@@ -5,36 +5,23 @@ test.describe('Login Page Tests', () => {
     await page.goto('/sign-in');
   });
 
-  // Content Verification Test
   test('Verify Login Page Content', async ({ page }) => {
-    // Language Dropdown
     const languageDropdown = page.getByTestId('popover-trigger').locator('div').filter({ hasText: 'English' }).first();
     await expect(languageDropdown).toBeVisible();
-
-    // Screen Elements
     await expect(page.getByRole('heading', { name: 'Login' })).toBeVisible();
     await expect(page.locator('#root')).toContainText('Welcome back!');
-
-    // Email Field
     const emailField = page.getByRole('textbox', { name: 'Enter email' });
     await expect(emailField).toBeVisible();
     await expect(page.locator('label')).toContainText('Email*');
-
-    // Next Button
     const nextButton = page.getByRole('button', { name: 'Next' });
     await expect(nextButton).toBeVisible();
-
-    // Footer
     const footer = page.getByText('© 2002-2025 GlobalMed®. All Rights Reserved');
     await expect(footer).toBeVisible();
   });
 
-  // Language Dropdown Test
   test('Verify Language Dropdown Functionality', async ({ page }) => {
     const languageDropdown = page.getByTestId('popover-trigger').first();
     const languageIcon = page.getByTestId('icon');
-
-    // Initial English state
     await expect(languageDropdown.locator('div').filter({ hasText: 'English' }).first()).toBeVisible();
 
     // Change to Spanish
@@ -48,7 +35,6 @@ test.describe('Login Page Tests', () => {
     await expect(languageDropdown.locator('div').filter({ hasText: 'English' }).first()).toBeVisible();
   });
 
-  // Negative Email Validation Tests
   test('Validate Empty Email Field', async ({ page }) => {
     const nextButton = page.getByRole('button', { name: 'Next' });
     
@@ -74,7 +60,6 @@ test.describe('Login Page Tests', () => {
       .toContainText('Please enter a valid email address');
   });
 
-  // Login Flow Tests
   test('Login with Registered Email', async ({ page }) => {
     const emailField = page.getByRole('textbox', { name: 'Enter email' });
     const nextButton = page.getByRole('button', { name: 'Next' });
