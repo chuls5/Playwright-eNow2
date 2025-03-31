@@ -2,10 +2,8 @@ import { test, expect } from '@playwright/test';
 import dotenv from 'dotenv';
 import path from 'path';
 
-// Load environment variables
 dotenv.config();
 
-// Use the Patients stored authentication state
 test.use({ storageState: 'playwright/.auth/coordinator.json' });
 
 test.describe('Schedule Appointment Coordinator', () => {
@@ -15,13 +13,12 @@ test.describe('Schedule Appointment Coordinator', () => {
       await page.waitForSelector('[data-testid="navigation"]', { timeout: 500 });
       await expect(page.locator('[data-testid="navigation"]')).toBeVisible();
     }).toPass();
-  });
-
-  test('Verify Schedule Session Screen Content on Clicking "Schedule Session" Button', async ({ page }) => {
     // 3. Click on the schedule session button
     await expect(page.getByRole('button', { name: 'CalendarPlus Schedule session' })).toBeVisible();
     await page.getByRole('button', { name: 'CalendarPlus Schedule session' }).click();
+  });
 
+  test('Verify Schedule Session Screen Content on Clicking "Schedule Session" Button', async ({ page }) => {
     // Verify Your Appointment Section
     const appointmentHeading = page.getByRole('heading', { name: 'Your appointment' });
     await expect(appointmentHeading).toBeVisible();
@@ -59,24 +56,66 @@ test.describe('Schedule Appointment Coordinator', () => {
   });
 
   test('Verify Date Selection Using Calendar Tool on Schedule Session Page', async ({ page }) => {
-    // Placeholder for future implementation
-    test.skip(true, 'Verify Date Selection Using Calendar Tool requires additional setup');
+    // Wait for the date picker to be visible
+    await page.waitForSelector('div[class*="react-datepicker"]');
+
+    // Find the element with today's date and click on it
+    const todaySelector = 'div[class*="react-datepicker__day"][class*="react-datepicker__day--today"]';
+    await page.waitForSelector(todaySelector);
+    await page.click(todaySelector);
+
+    // Verify that the selected date is highlighted (has aria-selected="true")
+    const selectedDateElement = await page.locator(
+        'div[class*="react-datepicker__day"][aria-selected="true"]'
+    );
+
+    // Verify the selected date element exists
+    await expect(selectedDateElement).toBeVisible();
+
+    // Verify that time-slots are displayed
+    await expect(async () => {
+      await page.waitForSelector('div[class*="_listTimes_el1gj_20"]', { timeout: 500 });
+      await expect(page.locator('div[class*="_listTimes_el1gj_20"]').first()).toBeVisible();
+    }).toPass();
   });
 
   test('Verify Time Slot Selection on Schedule Session Page', async ({ page }) => {
-    // 3. Click on the schedule session button
-    await expect(page.getByRole('button', { name: 'CalendarPlus Schedule session' })).toBeVisible();
-    await page.getByRole('button', { name: 'CalendarPlus Schedule session' }).click();
-    // 4. Click on a specifc date on calendar tool (see above)
-    // Placeholder for future implementation
-    test.skip(true, 'Verify Time Slot Selection on Schedule Session Page requires additional setup');
+    // Wait for the date picker to be visible
+    await page.waitForSelector('div[class*="react-datepicker"]');
+
+    // Find the element with today's date and click on it
+    const todaySelector = 'div[class*="react-datepicker__day"][class*="react-datepicker__day--today"]';
+    await page.waitForSelector(todaySelector);
+    await page.click(todaySelector);
+
+    // Verify that the selected date is highlighted (has aria-selected="true")
+    const selectedDateElement = await page.locator(
+        'div[class*="react-datepicker__day"][aria-selected="true"]'
+    );
+
+    // Verify the selected date element exists
+    await expect(selectedDateElement).toBeVisible();
+
+    // Wait for time slots to be displayed and select the first available one
+    await expect(async () => {
+      await page.waitForSelector('div[class*="_listTimes_el1gj_20"]', { timeout: 500 });
+      const timeSlots = page.locator('div[class*="_container_5we3n_1"]');
+      const count = await timeSlots.count();
+      for (let i = 0; i < count; i++) {
+        const timeSlot = timeSlots.nth(i);
+        if (await timeSlot.isEnabled() && await timeSlot.isVisible() && !(await timeSlot.getAttribute('class')).includes('disabled')) {
+          await timeSlot.click({ force: true });
+          break;
+        }
+      }
+      }).toPass();
+
+      // Verify that the selected time slot is highlighted 
+      const selectedTimeSlotElement = await page.locator('div[class="_container_5we3n_1 _active_5we3n_24"]');
+      await expect(selectedTimeSlotElement).toBeVisible();
   });
 
   test('Verify File Selection Using "Select File" Link on Schedule Session Page', async ({ page }) => {
-    // 3. Click on the schedule session button
-    await expect(page.getByRole('button', { name: 'CalendarPlus Schedule session' })).toBeVisible();
-    await page.getByRole('button', { name: 'CalendarPlus Schedule session' }).click();
-
     // 4. Click on "Choose files" link
     await expect(page.getByRole('link', { name: 'Choose files' })).toBeVisible();
     await page.getByRole('link', { name: 'Choose files' }).click();
@@ -102,15 +141,11 @@ test.describe('Schedule Appointment Coordinator', () => {
     ]);
 
     // Remove the file
-    await page.locator('[data-testid="close-icon"]').click();
-    await expect(page.locator('[data-testid="close-icon"]')).not.toBeVisible();
+    await page.getByRole('img', { name: 'XClose' }).getByTestId('icon').click();
+    await expect(previewImage).not.toBeVisible();
   });
 
   test('Verify Session Cancellation Using "Cancel" Button on Schedule Session Page', async ({ page }) => {
-    // 3. Click on the schedule session button
-    await expect(page.getByRole('button', { name: 'CalendarPlus Schedule session' })).toBeVisible();
-    await page.getByRole('button', { name: 'CalendarPlus Schedule session' }).click();
-
     // 4. Click on the "Cancel" button
     await expect(page.getByRole('button', { name: 'Cancel' })).toBeVisible();
     await page.getByRole('button', { name: 'Cancel' }).click();
@@ -122,10 +157,6 @@ test.describe('Schedule Appointment Coordinator', () => {
   });
 
   test('[Negative] Verify "Schedule Session" Button Requires Mandatory Inputs on Schedule Session Page', async ({ page }) => {
-    // 3. Click on the schedule session button
-    await expect(page.getByRole('button', { name: 'CalendarPlus Schedule session' })).toBeVisible();
-    await page.getByRole('button', { name: 'CalendarPlus Schedule session' }).click();
-
     // 4. Click on the "Schedule visit" button
     await expect(page.getByRole('button', { name: 'Schedule visit' })).toBeVisible();
     await page.getByRole('button', { name: 'Schedule visit' }).click();
@@ -135,4 +166,45 @@ test.describe('Schedule Appointment Coordinator', () => {
     await expect(page.getByText('Time slot is not selected')).toBeVisible();
   });
 
+  test('Verify "Schedule Session" Button Success with All Mandatory Inputs on Schedule Session Page', async ({ page }) => {
+    // Select todays date using the calendar tool
+    await page.click('div[class*="react-datepicker__day"][class*="react-datepicker__day--today"]');
+
+    // Select Provider
+    await page.getByRole('link', { name: 'Change provider' }).click();
+
+    await page.getByRole('textbox', { name: 'Search by name' }).fill('ashley');
+    await page.locator('div').filter({ hasText: /^Ashley FloresproviderDentist$/ }).first().click();
+    await page.getByRole('button', { name: 'Save' }).click();
+    
+    // Select Patient
+    await page.getByRole('link', { name: 'Change patient' }).click();
+    await page.getByRole('textbox', { name: 'Search by name' }).fill('hat');
+    await page.locator('div').filter({ hasText: /^Hatsune Mikupatient05\/30\/2000 \(24y\), female$/ }).nth(1).click();
+    await page.getByRole('button', { name: 'Save' }).click();
+
+    // Wait for time slots to be displayed and select the first available one
+    await expect(async () => {
+      await page.waitForSelector('div[class*="_listTimes_el1gj_20"]', { timeout: 500 });
+      const timeSlots = page.locator('div[class*="_container_5we3n_1"]');
+      const count = await timeSlots.count();
+      for (let i = 0; i < count; i++) {
+        const timeSlot = timeSlots.nth(i);
+        if (await timeSlot.isEnabled() && await timeSlot.isVisible() && !(await timeSlot.getAttribute('class')).includes('disabled')) {
+          await timeSlot.click({ force: true });
+          break;
+        }
+      }
+    }).toPass();
+
+    // Click on the "Schedule visit" button
+    await expect(page.getByRole('button', { name: 'Schedule visit' })).toBeVisible();
+    await page.getByRole('button', { name: 'Schedule visit' }).click();
+
+    // Wait for the toast notification to appear
+    await expect(async () => {
+      await page.waitForSelector('[data-testid="toast"]', { timeout: 5000 });
+      await expect(page.getByTestId('toast')).toBeVisible();
+    }).toPass();
+  });
 });
