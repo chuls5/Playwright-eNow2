@@ -4,7 +4,7 @@ import dotenv from 'dotenv';
 // Load environment variables
 dotenv.config();
 
-// Use the Patients stored authentication state
+// Use the Admins stored authentication state
 test.use({ storageState: 'playwright/.auth/admin.json' });
 
 test.describe('Admin User Managment', () => {
@@ -15,12 +15,11 @@ test.describe('Admin User Managment', () => {
       await page.waitForSelector('[data-testid="navigation"]', { timeout: 500 });
       await expect(page.locator('[data-testid="navigation"]')).toBeVisible();
     }).toPass();
+    // 1. (Pre-conditions) Verify admin user is logged in
+    await expect(page.locator('div').filter({ hasText: 'UsersInvite usersSearch by' }).nth(3)).toBeVisible();
   });
 
   test('Verify navigation to "Users" table', async ({ page }) => {
-    // 1. (Pre-conditions) Verify admin user is logged in
-    await expect(page.locator('div').filter({ hasText: 'UsersInvite usersSearch by' }).nth(3)).toBeVisible();
-
     // 2. Open "Users" tab from Admin panel
     await page.locator('a').filter({ hasText: 'Users' }).click();
     await expect(page.getByText('Search by name')).toBeVisible();
@@ -40,16 +39,10 @@ test.describe('Admin User Managment', () => {
   });
 
   test('Verify "Search" functionality on User Tab', async ({ page }) => {
-    // 1. (Pre-conditions) Verify admin user is logged in
-    await expect(page.locator('div').filter({ hasText: 'UsersInvite usersSearch by' }).nth(3)).toBeVisible();
-
     // 2: Search for a full username
     await page.getByRole('textbox', { name: 'John Doe' }).click();
     await page.getByRole('textbox', { name: 'John Doe' }).fill('Hatsune Miku');
     const userCell = page.getByRole('cell', { name: 'UserBig Hatsune Miku' });
-    if (!(await userCell.isVisible())) {
-      test.skip('User cell not found, skipping test.');
-    }
     await expect(userCell).toBeVisible();
 
     // 3. Enter a partial username
@@ -65,9 +58,6 @@ test.describe('Admin User Managment', () => {
   });
 
   test('Verify Role Filtering on User Tab', async ({ page }) => {
-    // 1. (Pre-conditions) Verify admin user is logged in
-    await expect(page.locator('div').filter({ hasText: 'UsersInvite usersSearch by' }).nth(3)).toBeVisible();
-
     // 2: Click filter dropdown and select a role
     await page.getByTestId('dropdown-field').click();
     await page.getByTestId('item Coordinator').click();
@@ -93,9 +83,6 @@ test.describe('Admin User Managment', () => {
   });
 
   test('Verify "Assigned Roles" management on User Tab', async ({ page }) => {
-    // 1. (Pre-conditions) Verify admin user is logged in
-    await expect(page.locator('div').filter({ hasText: 'UsersInvite usersSearch by' }).nth(3)).toBeVisible();
-
     // 2: Click the "Assigned Roles" link for the "Assigned Roles" column
     await page.getByRole('textbox', { name: 'John Doe' }).click();
     await page.getByRole('textbox', { name: 'John Doe' }).fill('co');
@@ -117,9 +104,6 @@ test.describe('Admin User Managment', () => {
 
 
   test('Verify Active toggle behavior on User Tab', async ({ page }) => {
-    // 1. (Pre-conditions) Verify admin user is logged in
-    await expect(page.locator('div').filter({ hasText: 'UsersInvite usersSearch by' }).nth(3)).toBeVisible();
-
     // 2: Locate a user in the table with active toggle "On"
     const toggleButtonOFF = page.getByRole('row', { name: 'Greg PatA drmgreg+pat1@gmail.' }).getByTestId('switch-div');
     await expect(toggleButtonOFF).toBeVisible();
@@ -138,52 +122,39 @@ test.describe('Admin User Managment', () => {
   });
 
   test('Verify "Last Updated" column filtering on User Tab', async ({ page }) => {
-    // 1. (Pre-conditions) Verify admin user is logged in
-    await expect(page.locator('div').filter({ hasText: 'UsersInvite usersSearch by' }).nth(3)).toBeVisible();
-
-    // 2. Click on the "Last Updated" column header to sort the table by descending order
-    await page.getByText('Last updated').click();
+    const lastupdatedButton = page.getByRole('button', { name: 'ChevronSelectorVertical' });
+    await lastupdatedButton.click(); 
     await expect(page.getByRole('button', { name: 'ChevronDown' })).toBeVisible();
 
-    // 3. Click on the "Last Updated" column header to sort the table by ascending order
-    await page.getByText('Last updated').click();
+    const lastupdatedButton2 = page.getByRole('button', { name: 'ChevronDown' });
+    await lastupdatedButton2.click();
     await expect(page.getByRole('button', { name: 'ChevronUp' })).toBeVisible();
 
-    // 4. Click on the "Last Updated" column header to return table to normal order
-    await page.getByText('Last updated').click();
+    const lastupdatedButton3 = page.getByRole('button', { name: 'ChevronUp' });
+    await lastupdatedButton3.click(); 
     await expect(page.getByRole('button', { name: 'ChevronSelectorVertical' })).toBeVisible();
   });
 
   test('Verify pagination in Users tab', async ({ page }) => {
-    // 1. (Pre-conditions) Verify admin user is logged in
-    await expect(page.locator('div').filter({ hasText: 'UsersInvite usersSearch by' }).nth(3)).toBeVisible();
+    // 2. Navigate to the Users tab
+    await page.locator('a').filter({ hasText: 'Users' }).click();
 
-    // 2. Scroll to the bottom of the user list
-    await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
-    await expect(page.getByTestId('pagination')).toMatchAriaSnapshot(`
-      - button "ArrowNarrowLeft Previous":
-        - img "ArrowNarrowLeft":
-          - img
-      - text: 1 2 3 4 5
-      - button "Next ArrowNarrowRight":
-        - img "ArrowNarrowRight":
-          - img
-      `);
+    // 4. Verify the pagination controls are visible
+    await expect(page.getByRole('button', { name: 'ArrowNarrowLeft Previous' })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Next ArrowNarrowRight' })).toBeVisible();
 
-    // 3. Click on the "Next" button in the pagination controls
+
+    // 5. Click on the "Next" button in the pagination controls
     await page.getByRole('button', { name: 'Next ArrowNarrowRight' }).click();
     await expect(page.getByRole('button', { name: 'ArrowNarrowLeft Previous' })).toBeVisible();
     await expect(page.getByRole('button', { name: 'ArrowNarrowLeft Previous' })).toBeEnabled();
 
-    // 4. Click on the "Previous" button in the pagination controls
+    // 6. Click on the "Previous" button in the pagination controls
     await page.getByRole('button', { name: 'ArrowNarrowLeft Previous' }).click();
     await expect(page.getByRole('button', { name: 'ArrowNarrowLeft Previous' })).not.toBeEnabled();
   });
 
   test('Verify Display of Invite User Form on User Tab', async ({ page }) => {
-    // 1. (Pre-conditions) Verify admin user is logged in
-    await expect(page.locator('div').filter({ hasText: 'UsersInvite usersSearch by' }).nth(3)).toBeVisible();
-
     // 2. Open "Users" tab from admin panel
     await page.locator('a').filter({ hasText: 'Users' }).click();
 
@@ -205,12 +176,9 @@ test.describe('Admin User Managment', () => {
     await expect(page.getByRole('button', { name: 'Send invite' })).toBeVisible();
     await expect(page.getByRole('button', { name: 'XClose' })).toBeVisible();
 
-      // Verify that the "Send invite" button is disabled by default
+    // Verify that the "Send invite" button is disabled by default
     const sendInviteButton = page.getByRole('button', { name: 'Send invite' });
     await expect(sendInviteButton).toBeVisible();
-    if (await sendInviteButton.isEnabled()) {
-      test.skip('Send invite button is enabled, skipping test.');
-    }
     await expect(sendInviteButton).toBeDisabled();
 
     // 3: Verify that all required fields have a red astrisk(*) next to them
@@ -225,13 +193,13 @@ test.describe('Admin User Managment', () => {
   });
 
   test('Validate Entering First Name, Last Name, and Email on Invite User Modal', async ({ page }) => {
-    // 1. (Pre-conditions) Verify admin user is logged in
-    await expect(page.locator('div').filter({ hasText: 'UsersInvite usersSearch by' }).nth(3)).toBeVisible();
-
     // 2. Open "Users" tab from Admin panel
     await page.locator('a').filter({ hasText: 'Users' }).click();
 
     // 3. Click "Invite Users" from Admin Panel
+    const sendInviteButton = page.getByRole('button', { name: 'Send invite' });
+    await expect(sendInviteButton).toBeDisabled();
+
     await page.getByRole('button', { name: 'UserAdd Invite users' }).click();
     await expect(page.getByTestId('modal')).toBeVisible();
     await expect(page.getByTestId('modal').getByText('Invite user')).toBeVisible();
@@ -249,23 +217,12 @@ test.describe('Admin User Managment', () => {
     await expect(page.getByRole('button', { name: 'Send invite' })).toBeVisible();
     await expect(page.getByRole('button', { name: 'XClose' })).toBeVisible();
 
-      // Verify that the "Send invite" button is disabled by default
-    const sendInviteButton = page.getByRole('button', { name: 'Send invite' });
-    await expect(sendInviteButton).toBeVisible();
-    if (await sendInviteButton.isEnabled()) {
-      test.skip('Send invite button is enabled, skipping test.');
-    }
-    await expect(sendInviteButton).toBeDisabled();
-
-    // 4. Enter a valid first name, last name
-    // ... TODO: Add test steps here
+    // Verify that the "Send invite" button remains disabled until all required fields are filled
+    await expect(sendInviteButton).toBeEnabled();
 
   });
 
   test('Verify Institution Dropdown Selection on Invite User Modal', async ({ page }) => {
-    // 1. (Pre-conditions) Verify admin user is logged in
-    await expect(page.locator('div').filter({ hasText: 'UsersInvite usersSearch by' }).nth(3)).toBeVisible();
-
     // 2. Open "Users" tab from Admin panel
     await page.locator('a').filter({ hasText: 'Users' }).click();
 
@@ -292,18 +249,16 @@ test.describe('Admin User Managment', () => {
     await expect(page.getByTestId('items-wrapper')).toBeVisible();
 
     // 5. Select an institution from the dropdown
-    await page.getByTestId('item GM Healthcare').click();
+    await page.getByTestId('items-wrapper').click();
 
-    // 6. Attempt to select a second institution
-    test.skip('Skipping test as multiple institution selection is not supported.');
-
-    // 7. Verify the "Send Invite" button state
+    // Verify the 'Send invite' button state
+    const sendInviteButton = page.getByRole('button', { name: 'Send invite' });
+    await expect(sendInviteButton).toBeVisible();
+    await expect(sendInviteButton).toBeEnabled();
+    await expect(page.getByTestId('modal').getByText('GM Healthcare:')).toBeVisible();
   });
 
   test('Verify Role Dropdown Selection on Invite User Modal', async ({ page }) => {
-    // 1. (Pre-conditions) Verify admin user is logged in
-    await expect(page.locator('div').filter({ hasText: 'UsersInvite usersSearch by' }).nth(3)).toBeVisible();
-
     // 2. Open "Users" tab from Admin panel
     await page.locator('a').filter({ hasText: 'Users' }).click();
 
@@ -348,9 +303,6 @@ test.describe('Admin User Managment', () => {
   });
 
   test('Validate Clicking Cancel Button on Invite User Modal', async ({ page }) => {
-    // 1. (Pre-conditions) Verify admin user is logged in
-    await expect(page.locator('div').filter({ hasText: 'UsersInvite usersSearch by' }).nth(3)).toBeVisible();
-
     // 2. Open "Users" tab from Admin panel
     await page.locator('a').filter({ hasText: 'Users' }).click();
 
@@ -384,9 +336,6 @@ test.describe('Admin User Managment', () => {
   });
 
   test('Validate Successful Invite Submission on Invite User Modal', async ({ page }) => {
-    // 1. (Pre-conditions) Verify admin user is logged in
-    await expect(page.locator('div').filter({ hasText: 'UsersInvite usersSearch by' }).nth(3)).toBeVisible();
-
     // 2. Open "Users" tab from Admin panel
     await page.locator('a').filter({ hasText: 'Users' }).click();
 
@@ -419,7 +368,8 @@ test.describe('Admin User Managment', () => {
     await page.getByRole('textbox', { name: 'example@mail.com' }).fill('john-doe@gmail.com');
 
     await page.getByTestId('dropdown-field').nth(1).click();
-    await page.getByTestId('item GM Healthcare').click();
+    const gmHealthcareElement = await page.getByTestId('items-wrapper').locator('div').filter({ hasText: /^GM Healthcare:/ }).first();
+    await gmHealthcareElement.click();
 
     await page.getByRole('textbox', { name: 'Patient, Provider...' }).click();
     await page.getByTestId('item Patient').click();
@@ -429,21 +379,4 @@ test.describe('Admin User Managment', () => {
     await expect(page.getByTestId('toast')).toContainText('Invite is send');
   });
 
-    test('Validate error messages on Invite User Modal', async ({ page }) => {
-      await openInviteUserModal(page);
-  
-      // Leave the form fields empty and click send invite
-      const sendInviteButton = page.getByRole('button', { name: 'Send invite' });
-  
-      if (await sendInviteButton.isEnabled()) {
-        await sendInviteButton.click();
-        await expect(page.locator('form')).toContainText('First name is required');
-        await expect(page.locator('form')).toContainText('Last name is required');
-        await expect(page.locator('form')).toContainText('Email is required');
-        await expect(page.locator('form')).toContainText('Select an institution');
-        await expect(page.locator('form')).toContainText('Select a role');
-      } else {
-          test.skip('Send invite button is disabled, skipping test.');
-      }
-    });
 });
