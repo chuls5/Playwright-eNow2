@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-test.use({ storageState: 'playwright/.auth/admin.json' });
+// test.use({ storageState: 'playwright/.auth/admin.json' });
 
 test.describe('Institution Profile Tests', () => {
   test.beforeEach(async ({ page }) => {
