@@ -28,6 +28,40 @@ export default defineConfig({
   },
   
   projects: [
+    // Uauthenticated browser projects for login/password tests
+    {
+      name: 'unauthenticated-chromium',
+      use: {
+        ...devices['Desktop Chrome'],
+      },
+      testMatch: [
+        /108921\.EN2_Password\.spec\.js/,
+        /108922\.EN2_Forgot_Password\.spec\.js/,
+        /111156\.EN2_Login\.spec\.js/
+      ]
+    },
+    {
+      name: 'unauthenticated-safari',
+      use: {
+        ...devices['Desktop Safari'],
+      },
+      testMatch: [
+        /108921\.EN2_Password\.spec\.js/,
+        /108922\.EN2_Forgot_Password\.spec\.js/,
+        /111156\.EN2_Login\.spec\.js/
+      ]
+    },
+    {
+      name: 'unauthenticated-edge',
+      use: {
+        ...devices['Desktop Edge'],
+      },
+      testMatch: [
+        /108921\.EN2_Password\.spec\.js/,
+        /108922\.EN2_Forgot_Password\.spec\.js/,
+        /111156\.EN2_Login\.spec\.js/
+      ]
+    },
     // Authentication Setup Projects (always run first)
     {
       name: 'patient-setup',
@@ -54,11 +88,11 @@ export default defineConfig({
         storageState: 'playwright/.auth/patient.json',
       },
       dependencies: ['patient-setup'],
-      testMatch: [
-        /108921\.EN2_Password\.spec\.js/,
-        /108922\.EN2_Forgot_Password\.spec\.js/,
-        /111156\.EN2_Login\.spec\.js/
-      ]
+      // testMatch: [
+      //   /108921\.EN2_Password\.spec\.js/,
+      //   /108922\.EN2_Forgot_Password\.spec\.js/,
+      //   /111156\.EN2_Login\.spec\.js/
+      // ]
     },
     {
       name: 'patient-safari',
@@ -142,7 +176,7 @@ export default defineConfig({
       },
       dependencies: ['coordinator-setup'],
       testMatch: [
-        // /109104\.EN2_Schedule_Appointment_Coordinator\.spec\.js/
+        /109104\.EN2_Schedule_Appointment_Coordinator\.spec\.js/
       ],
     },
     {
@@ -153,7 +187,7 @@ export default defineConfig({
       },
       dependencies: ['coordinator-setup'],
       testMatch: [
-        // /109104\.EN2_Schedule_Appointment_Coordinator\.spec\.js/
+        /109104\.EN2_Schedule_Appointment_Coordinator\.spec\.js/
       ],
     },
 
@@ -178,7 +212,8 @@ export default defineConfig({
       },
       dependencies: ['admin-setup'],
       testMatch: [
-        // /111360\.EN2_Admin_User_Management\.spec\.js/
+        /111360\.EN2_Admin_User_Management\.spec\.js/,
+        /111381\.EN2_Admin_Institution_Profile\.spec\.js/
       ],
     },
     {
@@ -189,7 +224,8 @@ export default defineConfig({
       },
       dependencies: ['admin-setup'],
       testMatch: [
-        // /111360\.EN2_Admin_User_Management\.spec\.js/
+        /111360\.EN2_Admin_User_Management\.spec\.js/,
+        /111381\.EN2_Admin_Institution_Profile\.spec\.js/
       ],
     },
   ],
