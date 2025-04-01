@@ -224,7 +224,7 @@ test.describe('Institution Profile Tests', () => {
     await expect(pocTitleInput).toHaveValue(randomPocTitle);
     await expect(pocPhoneNumberInput).toHaveValue(randomPocPhoneNumber);
     await expect(pocEmailInput).toHaveValue(randomPocEmail);
-    await saveButton.toBeDisabled();
+    await expect(saveButton).toBeDisabled();
   });
 
   test('Verify Save Changes Button is Disabled When No Changes are Made', async ({ page }) => {
@@ -257,5 +257,137 @@ test.describe('Institution Profile Tests', () => {
     // Click on another tab
     await page.locator('a').filter({ hasText: 'Users' }).click();
 
+    // Now navigate back to Profile
+    await page.locator('a').filter({ hasText: 'Institution settings' }).click();
+    await expect(page.getByText('Institution name')).toBeVisible();
+    
+    // Verify that changes were discarded by checking the input value
+    const updatedInstitutionName = await institutionNameInput.inputValue();
+    expect(updatedInstitutionName).toBe(institutionName); // Check if the input value is the same as the original
+  });
+
+  test('[Negative] Verify Invalid Input in Phone Number Field', async ({ page }) => {
+    // Click on Profile button
+    await page.getByRole('button', { name: 'Profile' }).click();
+
+    // Enter an invalid phone number
+    const phoneNumberInput = page.getByRole('textbox', { name: '+381-XX-XXXX-XXXX' }).first();
+    await phoneNumberInput.click();
+    const randomLastThreeDigits = Math.floor(100 + Math.random() * 900);
+    await phoneNumberInput.fill(`jenny${randomLastThreeDigits}`);
+
+    // Click on Save changes button
+    const saveButton = page.getByRole('button', { name: 'Save changes' });
+    await expect(saveButton).toBeEnabled();
+    await saveButton.click();
+
+    // Verify error message is displayed
+    await expect(page.getByTestId('toast')).toBeVisible();
+    await expect(page.getByText('Error', { exact: true })).toBeVisible();
+  });
+
+  test('[Negative] Verify Invalid Email Address Entry', async ({ page }) => {
+    // Click on Profile button
+    await page.getByRole('button', { name: 'Profile' }).click();
+
+    // Enter an invalid email format
+    const emailInput = page.getByRole('textbox', { name: 'example@mail.com' });
+    await emailInput.click();
+    const randomLastThreeDigits = Math.floor(100 + Math.random() * 900);
+    await emailInput.fill(`AAA${randomLastThreeDigits}`);
+
+    // Click on Save changes button
+    const saveButton = page.getByRole('button', { name: 'Save changes' });
+    await expect(saveButton).toBeEnabled();
+    await saveButton.click();
+
+    // Verify error message is displayed
+    await expect(page.getByTestId('toast')).toBeVisible();
+    await expect(page.getByText('Error', { exact: true })).toBeVisible();
+  });
+
+  test('[Negative] Verify ZIP Code Field Accepts Only Numerical Values', async ({ page }) => {
+    // TODO: This test currently fails because the ZIP code validation 
+    // is not yet implemented on the backend. Will be fixed in ticket #XYZ
+    
+    // Click on Profile button
+    await page.getByRole('button', { name: 'Profile' }).click();
+
+    // Enter invalid zipcode
+    const zipInput = page.getByRole('textbox', { name: 'XXXX' }).nth(1);
+    await zipInput.click();
+    const randomLetters = Array.from({ length: 5 }, () => String.fromCharCode(65 + Math.floor(Math.random() * 26))).join('');
+    await zipInput.fill(randomLetters);
+
+    // Click on Save changes button
+    const saveButton = page.getByRole('button', { name: 'Save changes' });
+    await expect(saveButton).toBeEnabled();
+    await saveButton.click();
+
+    // Verify error message is displayed
+    await expect(page.getByTestId('toast')).toBeVisible();
+    await expect(page.getByText('Error', { exact: true })).toBeVisible();
+  });
+
+  test.use({ 
+    contextOptions: {
+      permissions: ['clipboard-read', 'clipboard-write']
+    } 
+  });
+
+  test('Verify the Patient Registration Link functionality', async ({ page }) => {
+    // Click on Profile button
+    await page.getByRole('button', { name: 'Profile' }).click();
+    
+    // Wait for institution profile content to load
+    await expect(page.getByText('Institution name')).toBeVisible();
+  
+    // Get the link text before copying (optional)
+    const linkText = await page.locator('#root').filter({
+      hasText: 'https://portal.sandbox-encounterservices.com/signup/INSOYP73J85JLR2KDGM1GPX'
+    }).textContent();
+    
+    // Copy the Patient Registration Link
+    const copyLinkButton = page.getByRole('button', { name: 'Copy link' });
+    await copyLinkButton.click();
+  
+    // Verify that the link is copied successfully by checking for success message
+    const successMessage = page.getByText('Link successfully copied');
+    await expect(successMessage).toBeVisible();
+  });
+
+  test('Verify Notification Preferences Selection', async ({ page }) => {
+    // Click on Profile button
+    await page.getByRole('button', { name: 'Profile' }).click();
+    
+    // Wait for institution profile content to load
+    await expect(page.getByText('Institution name')).toBeVisible();
+
+    // Toggle SMS off
+    const smsToggle = page.locator('label').filter({ hasText: 'SMS' }).locator('span').nth(1);
+    await smsToggle.click();
+
+    // Toggle Email off
+    const emailToggle = page.locator('div').filter({ hasText: /^SMSEmail$/ }).locator('span').nth(3);
+    await emailToggle.click();
+
+    // Save changes
+    const saveButton = page.getByRole('button', { name: 'Save changes' });
+    await expect(saveButton).toBeEnabled();
+    await saveButton.click();
+
+    // Wait for the success message to appear
+    const successMessage = page.getByText('Info updated successfully');
+    await expect(successMessage).toBeVisible();
+
+    // Toggle SMS again
+    await smsToggle.click();
+
+    // Toggle Email again
+    await emailToggle.click();
+    
+    // Save changes again
+    await expect(saveButton).toBeEnabled();
+    await saveButton.click();
   });
 });
