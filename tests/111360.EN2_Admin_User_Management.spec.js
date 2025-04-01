@@ -1,13 +1,10 @@
 import { test, expect } from '@playwright/test';
 import dotenv from 'dotenv';
 
-// Load environment variables
 dotenv.config();
 
-// Helper functions for common actions
 const navigateToUsersTab = async (page) => {
   await page.goto('/users-table');
-  // Wait for navigation and main content to load
   await expect(async () => {
     await page.waitForSelector('[data-testid="navigation"]', { timeout: 500 });
     await expect(page.locator('[data-testid="navigation"]')).toBeVisible();
@@ -44,7 +41,7 @@ const verifyInviteUserModalElements = async (page) => {
   }
 };
 
-// Use the Patients stored authentication state
+// Use the Admins stored authentication state
 test.use({ storageState: 'playwright/.auth/admin.json' });
 
 test.describe('Admin User Management', () => {

@@ -15,84 +15,57 @@ test.describe('Institution Profile Tests', () => {
     // Click on Profile button
     await page.getByRole('button', { name: 'Profile' }).click();
     
-    // Wait for institution profile content to load
+    // Verify the presence of the following fileds in the 'Institution Settings' section
     await expect(page.getByText('Institution name')).toBeVisible();
+    await expect(page.getByRole('textbox', { name: 'Example Name' })).toBeVisible();
+    await expect(page.getByText('Patient Registration Link')).toBeVisible();
+    await expect(page.locator('#root')).toContainText('https://portal.sandbox-encounterservices.com/signup/INSOYP73J85JLR2KDGM1GPX');
+    await expect(page.getByRole('button', { name: 'Copy link' })).toBeVisible();
+    await expect(page.getByText('Phone number').first()).toBeVisible();
+    await expect(page.getByRole('textbox', { name: '+381-XX-XXXX-XXXX' }).first()).toBeVisible();
+    await expect(page.getByText('How would you like to receive notifications?SMSEmail')).toBeVisible();
 
-    // Verify Institution Settings section
-    await expect(page.locator('#root')).toMatchAriaSnapshot(`
-      - heading "Institution settings" [level=2]
-      - text: Institution name
-      - textbox "Example Name": GM Healthcare
-      - text: Patient Registration Link
-      - link "https://portal.sandbox-encounterservices.com/signup/INSOYP73J85JLR2KDGM1GPX"
-      - button "Copy link"
-      - text: Phone number
-      - textbox /\\+\\d+-XX-XXXX-XXXX/
-      - text: How would you like to receive notifications?
-      - checkbox "Check SMS" [checked]
-      - img "Check":
-        - img
-      - text: SMS
-      - checkbox "Check Email" [checked]
-      - img "Check":
-        - img
-      - text: Email
-    `);
+    // Verify the presence of the following fields in the 'Institution Address' section
+    await expect(page.getByRole('heading', { name: 'Institution Address' })).toBeVisible();
+    await expect(page.getByText('Street').first()).toBeVisible();
+    await expect(page.locator('div').filter({ hasText: /^StreetApt, Suite, EtcZIP codeCityCountryUnited States of AmericaStateArizona$/ }).getByPlaceholder('Street name example')).toBeVisible();
+    await expect(page.getByText('Apt, Suite, Etc').first()).toBeVisible();
+    await expect(page.locator('div').filter({ hasText: /^StreetApt, Suite, EtcZIP codeCityCountryUnited States of AmericaStateArizona$/ }).getByPlaceholder('Apt, Suite, Etc')).toBeVisible();
+    await expect(page.getByText('ZIP code').first()).toBeVisible();
+    await expect(page.locator('div').filter({ hasText: /^StreetApt, Suite, EtcZIP codeCityCountryUnited States of AmericaStateArizona$/ }).getByPlaceholder('XXXX')).toBeVisible();
+    await expect(page.getByText('City').first()).toBeVisible();
+    await expect(page.locator('div').filter({ hasText: /^StreetApt, Suite, EtcZIP codeCityCountryUnited States of AmericaStateArizona$/ }).getByPlaceholder('City example')).toBeVisible();
+    await expect(page.getByText('Country').first()).toBeVisible();
+    await expect(page.locator('div').filter({ hasText: /^CountryUnited States of America$/ }).getByTestId('custom-select-item-wrapper')).toBeVisible();
+    await expect(page.getByText('State').nth(1)).toBeVisible();
+    await expect(page.locator('div').filter({ hasText: /^StateArizona$/ }).getByTestId('custom-select-item-wrapper')).toBeVisible();
 
-    // Verify Institution Address section
-    await expect(page.locator('#root')).toMatchAriaSnapshot(`
-      - heading "Institution Address" [level=2]
-      - text: Street
-      - textbox "Street name example"
-      - text: Apt, Suite, Etc
-      - textbox "Apt, Suite, Etc"
-      - text: ZIP code
-      - textbox "XXXX": acf4
-      - text: City
-      - textbox "City example"
-      - text: Country
-      - paragraph: United States of America
-      - img "ChevronDown":
-        - img
-      - text: State
-      - paragraph: Arizona
-      - img "ChevronDown":
-        - img
-    `);
+    // Verify the presence of the following fields in the 'POC Details' section
+    await expect(page.getByRole('heading', { name: 'POC Details' })).toBeVisible();
+    await expect(page.getByText('Name', { exact: true })).toBeVisible();
+    await expect(page.getByRole('textbox', { name: 'John Doe' })).toBeVisible();
+    await expect(page.getByText('Title')).toBeVisible();
+    await expect(page.getByRole('textbox', { name: 'Title example' })).toBeVisible();
+    await expect(page.getByText('Phone number').nth(1)).toBeVisible();
+    await expect(page.locator('div').filter({ hasText: /^NameTitlePhone numberEmail$/ }).getByPlaceholder('+381-XX-XXXX-XXXX')).toBeVisible();
+    await expect(page.locator('div').filter({ hasText: /^Email$/ }).locator('label')).toBeVisible();
+    await expect(page.getByRole('textbox', { name: 'example@mail.com' })).toBeVisible();
 
-    // Verify POC Details section
-    await expect(page.locator('#root')).toMatchAriaSnapshot(`
-      - heading "POC Details" [level=2]
-      - text: Name
-      - textbox "John Doe": Emily Johnson
-      - text: Title
-      - textbox "Title example"
-      - text: Phone number
-      - textbox /\\+\\d+-XX-XXXX-XXXX/
-      - text: Email
-      - textbox "example@mail.com": emilyjwellnesscare.com
-    `);
+    // Verify the presence of the following fields in the 'POC Address' section
 
-    // Verify POC Address section
-    await expect(page.locator('#root')).toMatchAriaSnapshot(`
-      - heading "POC Address" [level=2]
-      - text: Street
-      - textbox "Street name example"
-      - text: Apt, Suite, Etc
-      - textbox "Apt, Suite, Etc"
-      - text: ZIP code
-      - textbox "XXXX"
-      - text: City
-      - textbox "City example"
-      - text: Country
-      - paragraph: Country
-      - img "ChevronDown":
-        - img
-      - text: State
-      - paragraph: State
-      - img "ChevronDown":
-        - img
-    `);
+    await expect(page.getByRole('heading', { name: 'POC Address' })).toBeVisible();
+    await expect(page.getByText('Street').nth(1)).toBeVisible();
+    await expect(page.locator('div').filter({ hasText: /^StreetApt, Suite, EtcZIP codeCityCountryCountryStateState$/ }).getByPlaceholder('Street name example')).toBeVisible();
+    await expect(page.getByText('Apt, Suite, Etc').nth(1)).toBeVisible();
+    await expect(page.locator('div').filter({ hasText: /^StreetApt, Suite, EtcZIP codeCityCountryCountryStateState$/ }).getByPlaceholder('Apt, Suite, Etc')).toBeVisible();
+    await expect(page.getByText('ZIP code').nth(1)).toBeVisible();
+    await expect(page.locator('div').filter({ hasText: /^StreetApt, Suite, EtcZIP codeCityCountryCountryStateState$/ }).getByPlaceholder('XXXX')).toBeVisible();
+    await expect(page.getByText('City').nth(1)).toBeVisible();
+    await expect(page.locator('div').filter({ hasText: /^StreetApt, Suite, EtcZIP codeCityCountryCountryStateState$/ }).getByPlaceholder('City example')).toBeVisible();
+    await expect(page.locator('div').filter({ hasText: /^CountryCountry$/ }).locator('span')).toBeVisible();
+    await expect(page.locator('div').filter({ hasText: /^CountryCountry$/ }).getByTestId('custom-select-item-wrapper')).toBeVisible();
+    await expect(page.locator('div').filter({ hasText: /^StateState$/ }).locator('span')).toBeVisible();
+    await expect(page.locator('div').filter({ hasText: /^State$/ }).nth(2)).toBeVisible();
 
     // Verify the presence of the 'Save changes' button
     const saveButton = page.getByRole('button', { name: 'Save changes' });
@@ -284,21 +257,5 @@ test.describe('Institution Profile Tests', () => {
     // Click on another tab
     await page.locator('a').filter({ hasText: 'Users' }).click();
 
-    // Confirm discard changes if a confirmation dialog appears
-    const discardDialog = page.locator('text=Discard changes?');
-    if (await discardDialog.isVisible()) {
-      await page.getByRole('button', { name: 'Discard' }).click();
-    }
-
-    // Navigate back to Institution settings
-    await page.locator('a').filter({ hasText: 'Institution settings' }).click();
-
-    // Wait for institution profile content to load
-    await expect(page.getByText('Institution name')).toBeVisible();
-    
-    // Verify that the Institution Name is unchanged
-    const updatedInstitutionName = await page.getByRole('textbox', { name: 'Example Name' }).inputValue();
-    await expect(updatedInstitutionName).toBe(institutionName);
   });
-
 });

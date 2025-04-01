@@ -1,35 +1,21 @@
 import { test, expect } from '@playwright/test';
 import dotenv from 'dotenv';
 
-
 dotenv.config();
 
 test.describe('Forgot Password Functionality', () => {
-    // This will run before each test
     test.beforeEach(async ({ page }) => {
         await page.goto(process.env.BASE_URL);
         await page.getByRole('textbox', { name: 'Enter email' }).fill(process.env.PATIENT_USERNAME);
         await page.getByRole('button', { name: 'Next' }).click();
     });
 
-    test('Verify "Forgot Password" Link Visibility and Redirection', async ({ page }) => {    
-        // Verify visibility of "Forgot Password" link
+    test('Verify "Forgot Password" Link on Passord Page', async ({ page }) => {    
         const passwordLink = page.getByRole('link', { name: 'Forgot Password' });
         await expect(passwordLink).toBeVisible();
-
-        // Click on the "Forgot Password" link
-        await passwordLink.click();
-        
-        // The user is redirected to the Forgot Password page
-        await expect(page).toHaveURL(/.*\/forgot-password/);
-        await expect(page.getByRole('heading', { name: 'Forgot Password' })).toBeVisible();
     });
 
-    test('Verify "Back to Password Page" Link', async ({ page }) => {    
-        // Navigate to Forgot Password Page
-        const passwordLink = page.getByRole('link', { name: 'Forgot Password' });
-        await passwordLink.click();
-
+    test('Verify "Back to Password Page" Link on Forgot Password Page', async ({ page }) => {  
         // Verify the visibility of "Back to Password Page" link
         const backToPasswordLink = page.getByRole('link', { name: 'Back to password page' });
         await expect(backToPasswordLink).toBeVisible();
@@ -39,15 +25,13 @@ test.describe('Forgot Password Functionality', () => {
         await expect(page).toHaveURL(/.*\/sign-in/);
     });
 
-    test('Verify Send Email Submission on Forgot Password Page', async ({ page }) => {
-        // Navigate to Forgot Password Page
+    test('Verify the Submission Button on Forgot Password Page', async ({ page }) => {
         const passwordLink = page.getByRole('link', { name: 'Forgot Password' });
+        await expect(passwordLink).toBeVisible();
         await passwordLink.click();
 
-        // Check the email in the text box & verify it is non-editable
-        const emailDisplay = page.locator('span._text_dd5cl_13');
-        
         // Verify the email displayed matches the username
+        const emailDisplay = page.locator('span._text_dd5cl_13');
         await expect(emailDisplay).toHaveText(process.env.PATIENT_USERNAME);
 
         // Click on the 'Send email' button
@@ -60,9 +44,9 @@ test.describe('Forgot Password Functionality', () => {
         await expect(page.getByRole('heading', { name: 'Your reset password link was sent' })).toBeVisible();
     });
 
-    test('Verify Resend Link Functionality', async ({ page }) => {
-        // Navigate to Forgot Password Page
+    test('Verify Resend Link on Forgot Password Page', async ({ page }) => {
         const passwordLink = page.getByRole('link', { name: 'Forgot Password' });
+        await expect(passwordLink).toBeVisible();
         await passwordLink.click();
 
         // Click on the 'Send Email' button
@@ -80,6 +64,14 @@ test.describe('Forgot Password Functionality', () => {
     test.skip('Verify the Verification Link in User email', async ({ page }) => {
         // Placeholder for future implementation
         test.skip(true, 'Email verification requires additional setup');
+    });
+
+    test('Verify redirect on "Forgot Password?" link click on Password Page', async ({ page }) => {
+        const passwordLink = page.getByRole('link', { name: 'Forgot Password' });
+        await expect(passwordLink).toBeVisible();
+        await passwordLink.click();
+        await expect(page).toHaveURL(/.*\/forgot-password/);
+        await expect(page.getByRole('heading', { name: 'Forgot Password' })).toBeVisible();
     });
 
     test.skip('[Negative] Verify Creation of a New Password that matches old password', async ({ page }) => {

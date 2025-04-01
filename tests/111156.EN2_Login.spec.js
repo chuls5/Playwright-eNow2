@@ -19,7 +19,7 @@ test.describe('Login Page Tests', () => {
     await expect(footer).toBeVisible();
   });
 
-  test('Verify Language Dropdown Functionality', async ({ page }) => {
+  test('Verify "Language" dropdown on Login Page', async ({ page }) => {
     const languageDropdown = page.getByTestId('popover-trigger').first();
     const languageIcon = page.getByTestId('icon');
     await expect(languageDropdown.locator('div').filter({ hasText: 'English' }).first()).toBeVisible();
@@ -35,7 +35,7 @@ test.describe('Login Page Tests', () => {
     await expect(languageDropdown.locator('div').filter({ hasText: 'English' }).first()).toBeVisible();
   });
 
-  test('Validate Empty Email Field', async ({ page }) => {
+  test('[Negative] Verify Login Behavior with Empty Email Field', async ({ page }) => {
     const nextButton = page.getByRole('button', { name: 'Next' });
     
     // Click Next without entering email
@@ -47,7 +47,7 @@ test.describe('Login Page Tests', () => {
     await expect(nextButton).toBeEnabled();
   });
 
-  test('Validate Invalid Email Format', async ({ page }) => {
+  test('[Negative] Verify Email Text Box Validation on Login Page', async ({ page }) => {
     const emailField = page.getByRole('textbox', { name: 'Enter email' });
     const nextButton = page.getByRole('button', { name: 'Next' });
 
@@ -58,6 +58,40 @@ test.describe('Login Page Tests', () => {
     // Validate error messages
     await expect(page.getByTestId('input').getByRole('paragraph'))
       .toContainText('Please enter a valid email address');
+  });
+
+  test('Verify Email Text Box Validation on Login Page', async ({ page }) => {
+    const emailField = page.getByRole('textbox', { name: 'Enter email' });
+    const nextButton = page.getByRole('button', { name: 'Next' });
+
+    // Enter valid email
+    await emailField.fill(process.env.PATIENT_USERNAME);
+    await nextButton.click();
+
+    // if email is valid, button click should be successful
+    await expect(page.getByText('Enter your password')).toBeVisible();
+  });
+
+  test('Verify Next Button - Valid Email Entered in Text Box', async ({ page }) => {
+    const emailField = page.getByRole('textbox', { name: 'Enter email' });
+    const nextButton = page.getByRole('button', { name: 'Next' });
+    
+    // Enter valid email
+    await emailField.fill('valid-email123@gmail.com');
+    await expect(nextButton).toBeEnabled();
+  });
+
+  test('Verify Next Button - Valid and Registered Email', async ({ page }) => {
+    const emailField = page.getByRole('textbox', { name: 'Enter email' });
+    const nextButton = page.getByRole('button', { name: 'Next' });
+
+    // Enter invalid email
+    await emailField.fill(process.env.PATIENT_USERNAME);
+    await expect(nextButton).toBeEnabled();
+    await nextButton.click();
+    
+    // Verify password screen
+    await expect(page.getByText('Enter your password')).toBeVisible();
   });
 
   test('Login with Registered Email', async ({ page }) => {
@@ -72,12 +106,12 @@ test.describe('Login Page Tests', () => {
     await expect(page.getByText('Enter your password')).toBeVisible();
   });
 
-  test('Login Attempt with Unregistered Email', async ({ page }) => {
+  test('[Negative] Verify Validation of an Unregistered Email on Login Page', async ({ page }) => {
     const emailField = page.getByRole('textbox', { name: 'Enter email' });
     const nextButton = page.getByRole('button', { name: 'Next' });
 
     // Enter unregistered email
-    await emailField.fill('valid-email991@gmail.com');
+    await emailField.fill('unregistered-email991@gmail.com');
     await nextButton.click();
 
     // Verify error message
