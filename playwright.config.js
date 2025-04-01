@@ -130,7 +130,7 @@ export default defineConfig({
       },
       dependencies: ['provider-setup'],
       testMatch: [
-        // Add specific provider tests here if needed
+        /109059\.EN2_Manage_Calander\.spec\.js/
       ]
     },
     {
@@ -141,7 +141,7 @@ export default defineConfig({
       },
       dependencies: ['provider-setup'],
       testMatch: [
-        // Add specific provider tests here if needed
+        /109059\.EN2_Manage_Calander\.spec\.js/
       ]
     },
     {
@@ -152,7 +152,7 @@ export default defineConfig({
       },
       dependencies: ['provider-setup'],
       testMatch: [
-        // Add specific provider tests here if needed
+        /109059\.EN2_Manage_Calander\.spec\.js/
       ]
     },
 
@@ -165,7 +165,8 @@ export default defineConfig({
       },
       dependencies: ['coordinator-setup'],
       testMatch: [
-        /109104\.EN2_Schedule_Appointment_Coordinator\.spec\.js/
+        /109104\.EN2_Schedule_Appointment_Coordinator\.spec\.js/,
+        /109059\.EN2_Manage_Calander\.spec\.js/
       ],
     },
     {
@@ -176,7 +177,8 @@ export default defineConfig({
       },
       dependencies: ['coordinator-setup'],
       testMatch: [
-        /109104\.EN2_Schedule_Appointment_Coordinator\.spec\.js/
+        /109104\.EN2_Schedule_Appointment_Coordinator\.spec\.js/,
+        /109059\.EN2_Manage_Calander\.spec\.js/
       ],
     },
     {
@@ -187,7 +189,8 @@ export default defineConfig({
       },
       dependencies: ['coordinator-setup'],
       testMatch: [
-        /109104\.EN2_Schedule_Appointment_Coordinator\.spec\.js/
+        /109104\.EN2_Schedule_Appointment_Coordinator\.spec\.js/,
+        /109059\.EN2_Manage_Calander\.spec\.js/
       ],
     },
 
@@ -201,7 +204,8 @@ export default defineConfig({
       dependencies: ['admin-setup'],
       testMatch: [
         /111360\.EN2_Admin_User_Management\.spec\.js/,
-        /111381\.EN2_Admin_Institution_Profile\.spec\.js/
+        /111381\.EN2_Admin_Institution_Profile\.spec\.js/,
+        /109059\.EN2_Manage_Calander\.spec\.js/
       ],
     },
     {
@@ -213,7 +217,8 @@ export default defineConfig({
       dependencies: ['admin-setup'],
       testMatch: [
         /111360\.EN2_Admin_User_Management\.spec\.js/,
-        /111381\.EN2_Admin_Institution_Profile\.spec\.js/
+        /111381\.EN2_Admin_Institution_Profile\.spec\.js/,
+        /109059\.EN2_Manage_Calander\.spec\.js/
       ],
     },
     {
@@ -225,7 +230,8 @@ export default defineConfig({
       dependencies: ['admin-setup'],
       testMatch: [
         /111360\.EN2_Admin_User_Management\.spec\.js/,
-        /111381\.EN2_Admin_Institution_Profile\.spec\.js/
+        /111381\.EN2_Admin_Institution_Profile\.spec\.js/,
+        /109059\.EN2_Manage_Calander\.spec\.js/
       ],
     },
   ],
