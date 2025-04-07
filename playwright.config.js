@@ -37,7 +37,8 @@ export default defineConfig({
       testMatch: [
         /108921\.EN2_Password\.spec\.js/,
         /108922\.EN2_Forgot_Password\.spec\.js/,
-        /111156\.EN2_Login\.spec\.js/
+        /111156\.EN2_Login\.spec\.js/,
+        /smoketest\.EN2_smoketest\.spec\.js/,
       ]
     },
     {
