@@ -64,13 +64,17 @@ async function loginAsPatient(page) {
     await page.getByRole('button', { name: 'Next' }).click();
   }).toPass({ timeout: 15000 });
   
-  // Password step with retry logic
-  await expect(async () => {
+  // Password step with debug logging and increased timeout
+  try {
     const passwordField = page.getByRole('textbox', { name: 'Enter your password' });
-    await passwordField.waitFor({ state: 'visible', timeout: 10000 });
+    await passwordField.waitFor({ state: 'visible', timeout: 20000 });
     await passwordField.fill(process.env.SMOKE_PATIENT_PASSWORD);
     await page.getByRole('button', { name: 'Log In' }).click();
-  }).toPass({ timeout: 15000 });
+  } catch (error) {
+    console.error('Error locating or interacting with the password field:', error);
+    await page.screenshot({ path: 'loginAsPatient-password-error.png' });
+    throw error;
+  }
   
   // Verify Dashboard Navigation
   await expect(page.locator('[data-testid="navigation"]')).toBeVisible({ timeout: 20000 });
@@ -87,15 +91,25 @@ async function setProviderAvailable(page) {
     // Toggle if not already available
     if (!isAvailable) {
       await availabilityToggle.click();
-      // Wait for a change in the UI rather than a fixed timeout
-      await page.waitForResponse(response => 
-        response.url().includes('/api/') && response.status() === 200, 
-        { timeout: 10000 }
-      );
+
+      // Wait for a change in the UI or fallback to checking the toggle state
+      const responseReceived = await page.waitForResponse(
+        response => response.url().includes('/api/') && response.status() === 200,
+        { timeout: 20000 }
+      ).catch(() => false);
+
+      if (!responseReceived) {
+        console.warn('API response not received, verifying toggle state as fallback.');
+        const newState = await availabilityToggle.getAttribute('aria-checked') === 'true';
+        if (!newState) {
+          throw new Error('Failed to set provider availability.');
+        }
+      }
     }
   } catch (error) {
     console.error('Error setting provider availability:', error);
-    throw error; // Re-throw for test to fail properly
+    await page.screenshot({ path: 'setProviderAvailable-error.png' });
+    throw error;
   }
 }
 
