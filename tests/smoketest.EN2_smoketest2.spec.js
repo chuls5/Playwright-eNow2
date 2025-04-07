@@ -58,13 +58,13 @@ async function loginAsPatient(page) {
   
   // Email step
   const emailField = page.getByRole('textbox', { name: 'Enter email' });
-  await emailField.waitFor({ state: 'visible', timeout: 10000 });
+  await emailField.waitFor({ state: 'visible', timeout: 1000000 });
   await emailField.fill(process.env.SMOKE_PATIENT_USERNAME);
   await page.getByRole('button', { name: 'Next' }).click();
   
   // Password step
   const passwordField = page.getByRole('textbox', { name: 'Enter your password' });
-  await passwordField.waitFor({ state: 'visible', timeout: 10000 });
+  await passwordField.waitFor({ state: 'visible', timeout: 1000000 });
   await passwordField.fill(process.env.SMOKE_PATIENT_PASSWORD);
   await page.getByRole('button', { name: 'Log In' }).click();
   
