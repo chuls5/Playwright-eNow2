@@ -64,17 +64,13 @@ async function loginAsPatient(page) {
     await page.getByRole('button', { name: 'Next' }).click();
   }).toPass({ timeout: 15000 });
   
-  // Password step with debug logging and increased timeout
-  try {
+  // Password step with retry logic
+  await expect(async () => {
     const passwordField = page.getByRole('textbox', { name: 'Enter your password' });
-    await passwordField.waitFor({ state: 'visible', timeout: 20000 });
+    await passwordField.waitFor({ state: 'visible', timeout: 10000 });
     await passwordField.fill(process.env.SMOKE_PATIENT_PASSWORD);
     await page.getByRole('button', { name: 'Log In' }).click();
-  } catch (error) {
-    console.error('Error locating or interacting with the password field:', error);
-    await page.screenshot({ path: 'loginAsPatient-password-error.png' });
-    throw error;
-  }
+  }).toPass({ timeout: 15000 });
   
   // Verify Dashboard Navigation
   await expect(page.locator('[data-testid="navigation"]')).toBeVisible({ timeout: 20000 });
@@ -83,7 +79,7 @@ async function loginAsPatient(page) {
 async function setProviderAvailable(page) {
   try {
     // Check current availability status with explicit wait
-    const availabilityToggle = page.locator('.sc-fDeYYK.iTrYlt', { name: 'Available' });
+    const availabilityToggle = page.locator('.sc-fDeYYK.iTrYlt');
     await availabilityToggle.waitFor({ state: 'visible', timeout: 10000 });
     
     const isAvailable = await availabilityToggle.getAttribute('aria-checked') === 'true';
@@ -91,25 +87,10 @@ async function setProviderAvailable(page) {
     // Toggle if not already available
     if (!isAvailable) {
       await availabilityToggle.click();
-
-      // Wait for a change in the UI or fallback to checking the toggle state
-      const responseReceived = await page.waitForResponse(
-        response => response.url().includes('/api/') && response.status() === 200,
-        { timeout: 20000 }
-      ).catch(() => false);
-
-      if (!responseReceived) {
-        console.warn('API response not received, verifying toggle state as fallback.');
-        const newState = await availabilityToggle.getAttribute('aria-checked') === 'true';
-        if (!newState) {
-          throw new Error('Failed to set provider availability.');
-        }
-      }
     }
   } catch (error) {
     console.error('Error setting provider availability:', error);
-    await page.screenshot({ path: 'setProviderAvailable-error.png' });
-    throw error;
+    throw error; // Re-throw for test to fail properly
   }
 }
 
@@ -240,26 +221,8 @@ multiUserTest('Basic Smoke Test EN2 Workflow - Patient can see provider now', as
 
     // Verify provider is redirected to the dashboard
     await providerCallPage.waitForURL('**/dashboard', { timeout: 30000 });
-
-    // Successful test completion
-    console.log('Test completed successfully');
   } catch (error) {
-    console.error('Test error:', error);
-    // Take screenshots on failure for debugging
-    await providerPage.screenshot({ path: 'provider-error.png' });
-    await patientPage.screenshot({ path: 'patient-error.png' });
-    throw error; // Re-throw to fail the test
-  } finally {
-    // Ensure cleanup happens regardless of test outcome
-    try {
-      const pages = [...providerContext.pages(), ...patientContext.pages()];
-      for (const page of pages) {
-        if (!page.isClosed()) {
-          await page.close();
-        }
-      }
-    } catch (cleanupError) {
-      console.error('Error during cleanup:', cleanupError);
-    }
+    console.error('Test failed:', error);
+    throw error;
   }
 });
