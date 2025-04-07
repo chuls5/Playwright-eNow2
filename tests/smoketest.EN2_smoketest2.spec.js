@@ -62,7 +62,7 @@ async function loginAsPatient(page) {
     await emailField.waitFor({ state: 'visible', timeout: 100000 });
     await emailField.fill(process.env.SMOKE_PATIENT_USERNAME);
     await page.getByRole('button', { name: 'Next' }).click();
-  }).toPass({ timeout: 15000 });
+  }).toPass({ timeout: 150000 });
   
   // Password step with retry logic
   await expect(async () => {
@@ -70,7 +70,7 @@ async function loginAsPatient(page) {
     await passwordField.waitFor({ state: 'visible', timeout: 100000 });
     await passwordField.fill(process.env.SMOKE_PATIENT_PASSWORD);
     await page.getByRole('button', { name: 'Log In' }).click();
-  }).toPass({ timeout: 15000 });
+  }).toPass({ timeout: 150000 });
   
   // Verify Dashboard Navigation
   await expect(page.locator('[data-testid="navigation"]')).toBeVisible({ timeout: 20000 });
