@@ -35,7 +35,7 @@ export default defineConfig({
         ...devices['Desktop Chrome'],
       },
       testMatch: [
-        /smoketest\.EN2_smoketest\.spec\.js/
+        /smoketest\.EN2_smoketest2\.spec\.js/
       ]
     },
     // Uauthenticated browser projects for login/password tests
