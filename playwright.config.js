@@ -28,6 +28,16 @@ export default defineConfig({
   },
   
   projects: [
+    // Smoketest project first
+    {
+      name: 'smoketest-chromium',
+      use: {
+        ...devices['Desktop Chrome'],
+      },
+      testMatch: [
+        /smoketest\.EN2_smoketest\.spec\.js/
+      ]
+    },
     // Uauthenticated browser projects for login/password tests
     {
       name: 'unauthenticated-chromium',
@@ -37,8 +47,7 @@ export default defineConfig({
       testMatch: [
         /108921\.EN2_Password\.spec\.js/,
         /108922\.EN2_Forgot_Password\.spec\.js/,
-        /111156\.EN2_Login\.spec\.js/,
-        /smoketest\.EN2_smoketest\.spec\.js/,
+        /111156\.EN2_Login\.spec\.js/
       ]
     },
     {
@@ -89,11 +98,6 @@ export default defineConfig({
         storageState: 'playwright/.auth/patient.json',
       },
       dependencies: ['patient-setup'],
-      // testMatch: [
-      //   /108921\.EN2_Password\.spec\.js/,
-      //   /108922\.EN2_Forgot_Password\.spec\.js/,
-      //   /111156\.EN2_Login\.spec\.js/
-      // ]
     },
     {
       name: 'patient-safari',
@@ -102,11 +106,7 @@ export default defineConfig({
         storageState: 'playwright/.auth/patient.json',
       },
       dependencies: ['patient-setup'],
-      testMatch: [
-        // /108921\.EN2_Password\.spec\.js/,
-        // /108922\.EN2_Forgot_Password\.spec\.js/,
-        // /111156\.EN2_Login\.spec\.js/
-      ]
+      testMatch: []
     },
     {
       name: 'patient-edge',
@@ -115,11 +115,7 @@ export default defineConfig({
         storageState: 'playwright/.auth/patient.json',
       },
       dependencies: ['patient-setup'],
-      testMatch: [
-        // /108921\.EN2_Password\.spec\.js/,
-        // /108922\.EN2_Forgot_Password\.spec\.js/,
-        // /111156\.EN2_Login\.spec\.js/
-      ]
+      testMatch: []
     },
 
     // Provider Test Projects (Chromium, Safari, Edge)

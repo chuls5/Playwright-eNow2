@@ -32,7 +32,7 @@ jobs:
           SMOKE_PATIENT_USERNAME: ${{ secrets.SMOKE_PATIENT_USERNAME }}
           SMOKE_PATIENT_PASSWORD: ${{ secrets.SMOKE_PATIENT_PASSWORD }}
           BASE_URL: ${{ secrets.BASE_URL }}
-        run: npx playwright test --project=unauthenticated-chromium
+        run: npx playwright test --project=smoketest-chromium --reporter=html --trace on
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
         with:
