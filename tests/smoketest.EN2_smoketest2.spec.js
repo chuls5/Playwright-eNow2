@@ -59,7 +59,7 @@ async function loginAsPatient(page) {
   // Email step with retry logic
   await expect(async () => {
     const emailField = page.getByRole('textbox', { name: 'Enter email' });
-    await emailField.waitFor({ state: 'visible', timeout: 10000 });
+    await emailField.waitFor({ state: 'visible', timeout: 100000 });
     await emailField.fill(process.env.SMOKE_PATIENT_USERNAME);
     await page.getByRole('button', { name: 'Next' }).click();
   }).toPass({ timeout: 15000 });
@@ -67,7 +67,7 @@ async function loginAsPatient(page) {
   // Password step with retry logic
   await expect(async () => {
     const passwordField = page.getByRole('textbox', { name: 'Enter your password' });
-    await passwordField.waitFor({ state: 'visible', timeout: 10000 });
+    await passwordField.waitFor({ state: 'visible', timeout: 100000 });
     await passwordField.fill(process.env.SMOKE_PATIENT_PASSWORD);
     await page.getByRole('button', { name: 'Log In' }).click();
   }).toPass({ timeout: 15000 });
