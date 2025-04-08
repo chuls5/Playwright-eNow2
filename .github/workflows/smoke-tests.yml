@@ -25,16 +25,12 @@ jobs:
           ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
           PROVIDER_USERNAME: ${{ secrets.PROVIDER_USERNAME }}
           PROVIDER_PASSWORD: ${{ secrets.PROVIDER_PASSWORD }}
-          SMOKE_PROVIDER_USERNAME: ${{ secrets.SMOKE_PROVIDER_USERNAME }}
-          SMOKE_PROVIDER_PASSWORD: ${{ secrets.SMOKE_PROVIDER_PASSWORD }}
           PATIENT_USERNAME: ${{ secrets.PATIENT_USERNAME }}
           PATIENT_PASSWORD: ${{ secrets.PATIENT_PASSWORD }}
-          SMOKE_PATIENT_USERNAME: ${{ secrets.SMOKE_PATIENT_USERNAME }}
-          SMOKE_PATIENT_PASSWORD: ${{ secrets.SMOKE_PATIENT_PASSWORD }}
           COORDINATOR_USERNAME: ${{ secrets.COORDINATOR_USERNAME }}
           COORDINATOR_PASSWORD: ${{ secrets.COORDINATOR_PASSWORD }}
           BASE_URL: ${{ secrets.BASE_URL }}
-        run: npx playwright test --project=admin-setup --project=coordinator-setup --project=provider-setup --project=patient-setup --project=smoketest-chromium
+        run: npx playwright test --project=smoketest-chromium
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
         with:
