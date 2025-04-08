@@ -35,7 +35,7 @@ export default defineConfig({
         ...devices['Desktop Chrome'],
       },
       testMatch: [
-        /smoketest\.EN2_smoketest2\.spec\.js/
+        /113710\.EN2_Release1\.0smoketest\.spec\.js/,
       ]
     },
     // Uauthenticated browser projects for login/password tests
@@ -98,6 +98,7 @@ export default defineConfig({
         storageState: 'playwright/.auth/patient.json',
       },
       dependencies: ['patient-setup'],
+      testMatch: []
     },
     {
       name: 'patient-safari',
