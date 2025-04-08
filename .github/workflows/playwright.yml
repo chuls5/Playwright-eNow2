@@ -31,8 +31,10 @@ jobs:
           PATIENT_PASSWORD: ${{ secrets.PATIENT_PASSWORD }}
           SMOKE_PATIENT_USERNAME: ${{ secrets.SMOKE_PATIENT_USERNAME }}
           SMOKE_PATIENT_PASSWORD: ${{ secrets.SMOKE_PATIENT_PASSWORD }}
+          COORDINATOR_USERNAME: ${{ secrets.COORDINATOR_USERNAME }}
+          COORDINATOR_PASSWORD: ${{ secrets.COORDINATOR_PASSWORD }}
           BASE_URL: ${{ secrets.BASE_URL }}
-        run: npx playwright test --project=smoketest-chromium --project=admin-setup --project=coordinator-setup --project=provider-setup --project=patient-setup
+        run: npx playwright test --project=admin-setup --project=coordinator-setup --project=provider-setup --project=patient-setup --project=smoketest-chromium
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
         with:
