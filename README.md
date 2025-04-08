@@ -1,7 +1,7 @@
 # 🎭 Playwright eNow2 Test Automation
 
-![Smoke Tests](https://github.com/chuss/Playwright-eNow2/actions/workflows/smoke-tests.yml/badge.svg)
-![Authentication Tests](https://github.com/chuss/Playwright-eNow2/actions/workflows/auth-tests.yml/badge.svg)
+![Smoke Tests](https://github.com/chuls/Playwright-eNow2/actions/workflows/smoke-tests.yml/badge.svg)
+![Authentication Tests](https://github.com/chuls/Playwright-eNow2/actions/workflows/auth-tests.yml/badge.svg)
 ![Playwright](https://img.shields.io/badge/playwright-v1.40+-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
 
