@@ -62,7 +62,6 @@ async function login(page, username, password) {
 
 async function checkNotifications(page) {
   await page.getByRole('link', { name: 'Bell' }).click();
-  
   await expect(page.getByRole('heading', { name: 'Notifications' })).toBeVisible();
   await expect(page.getByTestId('card')).toBeVisible();
   await expect(page.getByText('No notifications received')).toBeVisible();

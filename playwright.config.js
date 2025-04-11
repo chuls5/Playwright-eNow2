@@ -35,10 +35,11 @@ export default defineConfig({
         ...devices['Desktop Chrome'],
       },
       testMatch: [
-        /113710\.EN2_Release1\.0smoketest\.spec\.js/,
-        /providers-patients-connection\.spec\.js/,
+        /113710\.EN2_Smoke_User-Checks-Account-Settings\.spec\.js/,
+        /113710\.EN2_Smoke_Patient-Can-See-Provider-Now\.spec\.js/,
       ]
     },
+
     // Uauthenticated browser projects for login/password tests
     {
       name: 'unauthenticated-chromium',
@@ -73,6 +74,7 @@ export default defineConfig({
         /111156\.EN2_Login\.spec\.js/
       ]
     },
+    
     // Authentication Setup Projects (always run first)
     {
       name: 'patient-setup',

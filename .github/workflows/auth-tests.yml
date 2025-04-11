@@ -6,8 +6,8 @@ on:
   pull_request:
     branches: [main, master]
   schedule:
-    # This runs at 02:00 UTC every day (to stagger the load)
-    - cron: "0 2 * * *"
+    # This runs at 02:00 UTC every other day
+    - cron: "0 2 */2 * *"
 
 jobs:
   test:

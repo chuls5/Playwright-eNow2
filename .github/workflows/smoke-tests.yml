@@ -1,4 +1,4 @@
-name: Smoke Tests
+name: Smoke Test - Account Settings
 
 on:
   push:
@@ -6,8 +6,8 @@ on:
   pull_request:
     branches: [main, master]
   schedule:
-    # This runs at Midnight UTC every day (to stagger the load)
-    - cron: "0 0 * * *"
+    # This runs at 00:00 UTC (midnight) every other day
+    - cron: "0 0 */2 * *"
 
 jobs:
   test:

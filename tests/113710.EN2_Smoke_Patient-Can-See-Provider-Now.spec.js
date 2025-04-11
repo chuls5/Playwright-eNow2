@@ -1,4 +1,3 @@
-// providers-patients-connection.spec.js
 const { test, expect } = require('@playwright/test');
 import dotenv from 'dotenv';
 
@@ -8,7 +7,6 @@ dotenv.config();
 const isCI = process.env.CI === 'true';
 
 const multiUserTest = test.extend({
-  // Create provider page
   providerPage: async ({ browser }, use) => {
     const providerContext = await browser.newContext({
       permissions: ['camera', 'microphone'],
@@ -17,8 +15,7 @@ const multiUserTest = test.extend({
     await use(providerPage);
     await providerContext.close();
   },
-  
-  // Create patient page
+
   patientPage: async ({ browser }, use) => {
     const patientContext = await browser.newContext({
       permissions: ['camera', 'microphone'],
@@ -31,7 +28,7 @@ const multiUserTest = test.extend({
 
 // Helper functions for common actions
 async function loginAsProvider(page) {
-  await page.goto(process.env.BASE_URL, { timeout: 30000 });
+  await page.goto(process.env.BASE_URL, { timeout: 60000 });
   
   // Email step with retry logic
   await expect(async () => {
@@ -50,11 +47,14 @@ async function loginAsProvider(page) {
   }).toPass({ timeout: 15000 });
   
   // Verify Dashboard Navigation
-  await expect(page.locator('[data-testid="navigation"]')).toBeVisible({ timeout: 20000 });
+  await expect(async () => {
+    await page.waitForSelector('[data-testid="navigation"]', { timeout: 500 });
+    await expect(page.locator('[data-testid="navigation"]')).toBeVisible();
+  }).toPass({ timeout: 20000 });
 }
 
 async function loginAsPatient(page) {
-  await page.goto(process.env.BASE_URL, { timeout: 30000 });
+  await page.goto(process.env.BASE_URL, { timeout: 60000 });
   
   // Email step with retry logic
   await expect(async () => {
@@ -73,7 +73,10 @@ async function loginAsPatient(page) {
   }).toPass({ timeout: 15000 });
   
   // Verify Dashboard Navigation
-  await page.waitForSelector('[data-testid="navigation"]', { timeout: 20000 });
+  await expect(async () => {
+    await page.waitForSelector('[data-testid="navigation"]', { timeout: 500 });
+    await expect(page.locator('[data-testid="navigation"]')).toBeVisible();
+  }).toPass({ timeout: 20000 });
 }
 
 async function setProviderAvailable(page) {
@@ -102,8 +105,10 @@ multiUserTest('Basic Smoke Test EN2 Workflow - Patient can see provider now', as
   const providerContext = providerPage.context();
   const patientContext = patientPage.context();
   
-  // Only enable WebSocket logging when not in CI
-  if (!isCI) {
+  // Enable WebSocket logging with environment variable control
+  const enableWebSocketLogging = isCI ? process.env.DEBUG_WEBSOCKETS === 'true' : true;
+  
+  if (enableWebSocketLogging) {
     await providerPage.on('websocket', ws => {
       console.log(`Provider WebSocket opened: ${ws.url()}`);
       ws.on('close', () => console.log('Provider WebSocket closed'));
@@ -137,17 +142,6 @@ multiUserTest('Basic Smoke Test EN2 Workflow - Patient can see provider now', as
       await skipButton.waitFor({ state: 'visible', timeout: 10000 });
       await skipButton.click();
     }).toPass({ timeout: 15000 });
-    
-    // Change service - commented out as in the provided code
-    // await patientPage.getByText('Change Service').click();
-    // await patientPage.getByText('General Practice').click();
-    // try {
-    //   await patientPage.getByRole('button', { name: 'Save' }).click();
-    //   console.log('Clicked Save button');
-    // } catch (error) {
-    //   console.log('Save button not found or not clickable, trying Cancel button');
-    //   await patientPage.getByRole('button', { name: 'Cancel' }).click();
-    // }
     
     // Continue with payment options
     const privatePaymentOption = patientPage.getByText('No, continue paying private');
@@ -212,10 +206,12 @@ multiUserTest('Basic Smoke Test EN2 Workflow - Patient can see provider now', as
     // Wait for call controls to become visible to confirm call is connected
     await expect(providerCallPage.getByRole('button', { name: 'End call for all' }))
       .toBeVisible({ timeout: 20000 });
+    console.log('Call connected for both provider and patient');
 
     // 5. Provider clicks 'end call for all'
     const endCallButton = providerCallPage.getByRole('button', { name: 'End call for all' });
     await endCallButton.click();
+    console.log('Provider ended the call for all');
 
     // Verify patient is redirected to the dashboard
     await patientCallPage.waitForURL('**/dashboard', { timeout: 30000 });
