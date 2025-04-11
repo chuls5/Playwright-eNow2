@@ -56,17 +56,21 @@ async function loginAsProvider(page) {
 async function loginAsPatient(page) {
   await page.goto(process.env.BASE_URL, { timeout: 30000 });
   
-  // Email step
-  const emailField = page.getByRole('textbox', { name: 'Enter email' });
-  await emailField.waitFor({ state: 'visible', timeout: 1000000 });
-  await emailField.fill(process.env.SMOKE_PATIENT_USERNAME);
-  await page.getByRole('button', { name: 'Next' }).click();
+  // Email step with retry logic
+  await expect(async () => {
+    const emailField = page.getByRole('textbox', { name: 'Enter email' });
+    await emailField.waitFor({ state: 'visible', timeout: 10000 });
+    await emailField.fill(process.env.SMOKE_PATIENT_USERNAME);
+    await page.getByRole('button', { name: 'Next' }).click();
+  }).toPass({ timeout: 15000 });
   
-  // Password step
-  const passwordField = page.getByRole('textbox', { name: 'Enter your password' });
-  await passwordField.waitFor({ state: 'visible', timeout: 1000000 });
-  await passwordField.fill(process.env.SMOKE_PATIENT_PASSWORD);
-  await page.getByRole('button', { name: 'Log In' }).click();
+  // Password step with retry logic
+  await expect(async () => {
+    const passwordField = page.getByRole('textbox', { name: 'Enter your password' });
+    await passwordField.waitFor({ state: 'visible', timeout: 10000 });
+    await passwordField.fill(process.env.SMOKE_PATIENT_PASSWORD);
+    await page.getByRole('button', { name: 'Log In' }).click();
+  }).toPass({ timeout: 15000 });
   
   // Verify Dashboard Navigation
   await page.waitForSelector('[data-testid="navigation"]', { timeout: 20000 });
