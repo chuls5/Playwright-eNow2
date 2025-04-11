@@ -126,23 +126,24 @@ multiUserTest('Basic Smoke Test EN2 Workflow - Patient can see provider now', as
     await seeProviderButton.waitFor({ state: 'visible', timeout: 10000 });
     await seeProviderButton.click();
     
-    // Click continue
-    const continueButton = patientPage.getByText('Continue');
-    await continueButton.waitFor({ state: 'visible', timeout: 10000 });
-    await continueButton.click();
+    // Click continue with improved resilience
+    await expect(async () => {
+      // Wait for the continue button to be visible and stable
+      const skipButton = patientPage.getByRole('button', { name: 'Skip' });
+      await skipButton.waitFor({ state: 'visible', timeout: 10000 });
+      await skipButton.click();
+    }).toPass({ timeout: 15000 });
     
-    // Select service
-    const selectServiceButton = patientPage.getByText('Select Service');
-    await selectServiceButton.waitFor({ state: 'visible', timeout: 10000 });
-    await selectServiceButton.click();
-    
-    const generalPracticeOption = patientPage.getByText('General Practice');
-    await generalPracticeOption.waitFor({ state: 'visible', timeout: 10000 });
-    await generalPracticeOption.click();
-    
-    const saveButton = patientPage.getByRole('button', { name: 'Save' });
-    await saveButton.waitFor({ state: 'visible', timeout: 10000 });
-    await saveButton.click();
+    // Change service - commented out as in the provided code
+    // await patientPage.getByText('Change Service').click();
+    // await patientPage.getByText('General Practice').click();
+    // try {
+    //   await patientPage.getByRole('button', { name: 'Save' }).click();
+    //   console.log('Clicked Save button');
+    // } catch (error) {
+    //   console.log('Save button not found or not clickable, trying Cancel button');
+    //   await patientPage.getByRole('button', { name: 'Cancel' }).click();
+    // }
     
     // Continue with payment options
     const privatePaymentOption = patientPage.getByText('No, continue paying private');

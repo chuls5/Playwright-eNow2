@@ -36,6 +36,7 @@ export default defineConfig({
       },
       testMatch: [
         /113710\.EN2_Release1\.0smoketest\.spec\.js/,
+        /providers-patients-connection\.spec\.js/,
       ]
     },
     // Uauthenticated browser projects for login/password tests
